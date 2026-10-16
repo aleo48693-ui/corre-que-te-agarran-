@@ -3,115 +3,202 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Corre que te agarran</title>
+<title>Corre o Choca</title>
 <style>
-html,body{margin:0;padding:0;overflow:hidden;background:#87CEEB;font-family:sans-serif}
-#game{width:100%;height:100vh;position:relative;background:linear-gradient(#87CEEB 60%, #7ED957 60%)}
-#player{position:absolute;bottom:60px;left:50px;font-size:50px;z-index:5}
-#police{position:absolute;bottom:60px;left:0px;font-size:50px;z-index:4}
-#floor{position:absolute;bottom:0;width:100%;height:60px;background:#8B4513}
-#hud{position:absolute;top:15px;left:15px;right:15px;z-index:10}
+html,body{margin:0;padding:0;overflow:hidden;background:#333;font-family:Arial}
+#game{width:100%;height:100vh;position:relative;background:#555}
+#road{position:absolute;width:300px;height:100%;left:50%;transform:translateX(-50%);background:#444;overflow:hidden}
+.lane{position:absolute;width:2px;height:100%;background:yellow;opacity:0.5}
+#player{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);font-size:50px;z-index:10;transition:left 0.1s}
+.police{position:absolute;font-size:50px;z-index:9}
+#hud{position:absolute;top:15px;left:15px;right:15px;z-index:20}
 .box{background:#fff;padding:10px 20px;border-radius:25px;font-weight:900;font-size:18px;box-shadow:0 3px 6px rgba(0,0,0,0.3)}
 #score{float:left}
-#coins{float:right;background:gold}
-#startText{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:24px;font-weight:900;color:#fff;text-shadow:2px 2px 4px #000;z-index:10}
-#gameOver{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;z-index:100}
-#box{ background:#fff;padding:30px;border-radius:15px;text-align:center}
+#lives{float:right;background:#f44336;color:#fff}
+#controls{position:fixed;bottom:20px;left:0;right:0;display:flex;justify-content:center;gap:40px;z-index:20}
+.ctrlBtn{background:rgba(255,255,255,0.3);color:#fff;border:3px solid #fff;width:80px;height:80px;border-radius:50%;font-size:40px;font-weight:900}
+.ctrlBtn:active{background:rgba(255,255,255,0.6)}
+#gameOver{position:fixed;inset:0;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:100}
+#box{background:#fff;padding:30px;border-radius:15px;text-align:center;max-width:320px}
 .btn{background:#4CAF50;color:#fff;border:0;padding:18px 30px;margin:10px 0;border-radius:10px;font-size:18px;font-weight:900;width:100%}
+.btnRevive{background:#FF9800;font-size:20px}
 .btnMp{background:#009EE3}
-#cafecito{position:fixed;bottom:15px;left:15px;z-index:20;background:#009EE3;color:#fff;border:0;padding:14px 24px;border-radius:30px;font-size:17px;font-weight:900;box-shadow:0 3px 6px rgba(0,0,0,0.3)}
+#startText{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);font-size:24px;font-weight:900;color:#fff;text-shadow:2px 2px 4px #000;z-index:10;text-align:center}
+.explosion{position:absolute;font-size:60px;animation:boom 0.5s}
+@keyframes boom{0%{transform:scale(0)}50%{transform:scale(1.5)}100%{transform:scale(1);opacity:0}}
 </style>
 </head>
 <body>
-<div id="game" onclick="accion()">
-    <div id="hud">
-        <div id="score" class="box">Puntos: 0</div>
-        <div id="coins" class="box">💰 0</div>
+<div id="game">
+    <div id="road">
+        <div class="lane" style="left:33%"></div>
+        <div class="lane" style="left:66%"></div>
     </div>
-    <div id="startText">TOCÁ PARA EMPEZAR</div>
-    <div id="police">👮</div>
-    <div id="player">🏃</div>
-    <div id="floor"></div>
-    <button id="cafecito" onclick="donar(event)">☕ Invitame un café</button>
+    <div id="hud">
+        <div id="score" class="box">KM: 0</div>
+        <div id="lives" class="box">❤️ 3</div>
+    </div>
+    <div id="startText">TOCÁ ◀️ ▶️ PARA ESQUIVAR<br>SI TE CHOCAN = GAME OVER</div>
+    <div id="player">🚗</div>
+    
+    <div id="controls">
+        <button class="ctrlBtn" onclick="mover(-1)">◀️</button>
+        <button class="ctrlBtn" onclick="mover(1)">▶️</button>
+    </div>
 </div>
 
 <div id="gameOver">
     <div id="box">
-        <h2 style="margin:0 0 10px 0">¡Te agarraron!</h2>
-        <p style="font-size:20px;margin:10px 0">Puntaje: <b id="puntosFinal">0</b></p>
-        <button class="btn" onclick="reiniciar()">JUGAR DE NUEVO</button>
+        <h2 style="margin:0 0 10px 0">💥 CHOQUE TOTAL 💥</h2>
+        <p style="font-size:20px;margin:10px 0">Recorriste: <b id="kmFinal">0</b> KM</p>
+        <button class="btn btnRevive" onclick="revivir()">🔄 REVIVIR - $300</button>
+        <p style="font-size:12px;color:#666;margin:5px 0">La plata va directo al creador</p>
+        <button class="btn" onclick="reiniciar()">JUGAR DE NUEVO GRATIS</button>
+        <button class="btn btnMp" onclick="donar()">☕ INVITAME UN CAFÉ $500</button>
     </div>
 </div>
 
 <script>
-// PEGÁ TU LINK DE MERCADO PAGO ACÁ CUANDO LO TENGAS
-const LINK_MP = "https://www.mercadopago.com.ar";
+// PEGÁ TU LINK DE MP ACÁ PARA EL BOTÓN DE CAFÉ
+const LINK_CAFECITO = "https://mpago.la/TU_LINK_ACA";
 
-let jugando=false, saltando=false, puntos=0, monedas=0;
-let playerY=60, policeX=0, velocidad=4;
+// ID DEL PRODUCTO EN GOOGLE PLAY - LO CREAMOS DESPUÉS
+const PRODUCTO_REVIVIR = "revivir_300";
+
+let jugando=false, km=0, vidas=3;
+let carril=1; // 0=izq, 1=medio, 2=der
+let polis=[];
+let velocidad=5;
 let player=document.getElementById('player');
-let police=document.getElementById('police');
+let game=document.getElementById('game');
 
-if(localStorage.monedas) monedas=parseInt(localStorage.monedas);
-document.getElementById('coins').innerHTML='💰 '+monedas;
-
-function accion(){
+function mover(dir){
     if(!jugando){ empezar(); return; }
-    if(!saltando){
-        saltando=true;
-        playerY=180;
-        player.style.bottom=playerY+'px';
-        setTimeout(()=>{
-            playerY=60;
-            player.style.bottom=playerY+'px';
-            saltando=false;
-        },450);
-    }
+    carril = Math.max(0, Math.min(2, carril + dir));
+    let pos = [25, 50, 75][carril];
+    player.style.left = pos + '%';
+}
+
+function crearPoli(){
+    const poli = document.createElement('div');
+    poli.className = 'police';
+    poli.innerHTML = '🚓';
+    let carrilPoli = Math.floor(Math.random()*3);
+    poli.style.left = [25, 50, 75][carrilPoli] + '%';
+    poli.style.top = '-60px';
+    poli.dataset.carril = carrilPoli;
+    game.appendChild(poli);
+    polis.push({el:poli, y:-60, carril:carrilPoli});
 }
 
 function loop(){
     if(!jugando) return;
-    puntos++;
-    document.getElementById('score').innerHTML='Puntos: '+puntos;
+    km++;
+    document.getElementById('score').innerHTML='KM: '+Math.floor(km/10);
     
-    policeX+=velocidad;
-    police.style.left=policeX+'px';
+    // Mover polis
+    polis.forEach((p,i)=>{
+        p.y += velocidad;
+        p.el.style.top = p.y + 'px';
+        
+        // Choque
+        if(p.y > window.innerHeight-140 && p.y < window.innerHeight-60 && p.carril === carril){
+            chocar(p);
+        }
+        
+        // Borrar si se fue
+        if(p.y > window.innerHeight){
+            p.el.remove();
+            polis.splice(i,1);
+        }
+    });
     
-    // Si el poli te toca y no saltaste = perdiste
-    if(policeX>25 && policeX<75 && playerY<100){
-        perder();
+    // Spawn polis
+    if(Math.random() < 0.03 + km*0.00001) crearPoli();
+    
+    velocidad += 0.001;
+    requestAnimationFrame(loop);
+}
+
+function chocar(poli){
+    jugando=false;
+    vidas--;
+    document.getElementById('lives').innerHTML='❤️ '+vidas;
+    
+    // Explosión
+    const exp = document.createElement('div');
+    exp.className='explosion';
+    exp.innerHTML='💥';
+    exp.style.left=poli.el.style.left;
+    exp.style.bottom='80px';
+    game.appendChild(exp);
+    setTimeout(()=>exp.remove(),500);
+    
+    poli.el.remove();
+    polis = polis.filter(p=>p!==poli);
+    
+    if(vidas <= 0){
+        gameOver();
     }else{
-        velocidad+=0.002;
-        requestAnimationFrame(loop);
+        setTimeout(()=>{
+            jugando=true;
+            loop();
+        },1000);
     }
 }
 
 function empezar(){
     jugando=true;
-    puntos=0;
-    policeX=-60;
-    velocidad=4;
+    km=0; vidas=3; carril=1; velocidad=5;
+    polis.forEach(p=>p.el.remove());
+    polis=[];
     document.getElementById('startText').style.display='none';
     document.getElementById('gameOver').style.display='none';
+    document.getElementById('lives').innerHTML='❤️ 3';
+    player.style.left='50%';
     loop();
 }
 
-function perder(){
-    jugando=false;
-    document.getElementById('puntosFinal').innerText=puntos;
+function gameOver(){
+    document.getElementById('kmFinal').innerText=Math.floor(km/10);
     document.getElementById('gameOver').style.display='flex';
-    monedas+=Math.floor(puntos/10);
-    localStorage.monedas=monedas;
-    document.getElementById('coins').innerHTML='💰 '+monedas;
+}
+
+function revivir(){
+    // ACÁ SE CONECTA CON GOOGLE PLAY BILLING
+    // Cuando lo compiles a APK con Capacitor, esto abre el pago de $300
+    
+    if(typeof Android !== 'undefined'){
+        // Si está en Android, llama al pago
+        Android.comprarProducto(PRODUCTO_REVIVIR);
+    } else {
+        // Si está en web, simulamos o mandamos a MP
+        alert('En Android se abre Google Play para pagar $300 y revivir.\n\nPor ahora en web: pagá por Mercado Pago');
+        window.open(LINK_CAFECITO,'_blank');
+        // Damos el revive gratis en web para testear
+        vidas=3;
+        jugando=true;
+        document.getElementById('gameOver').style.display='none';
+        document.getElementById('lives').innerHTML='❤️ 3';
+        loop();
+    }
+}
+
+// Esta función la llama Android cuando el pago sale bien
+function pagoExitoso(){
+    vidas=3;
+    jugando=true;
+    document.getElementById('gameOver').style.display='none';
+    document.getElementById('lives').innerHTML='❤️ 3';
+    loop();
 }
 
 function reiniciar(){
     empezar();
 }
 
-function donar(e){
-    e.stopPropagation();
-    window.open(LINK_MP,'_blank');
+function donar(){
+    window.open(LINK_CAFECITO,'_blank');
 }
 </script>
 </body>
