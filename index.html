@@ -1,166 +1,118 @@
-
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Corre que te agarran</title>
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; font-family:Arial; }
-        body { background:#87CEEB; overflow:hidden; }
-        #game { width:100vw; height:100vh; position:relative; background:#7ED957; }
-        #hud { position:absolute; top:10px; left:10px; right:10px; z-index:10; }
-        #score { background:#fff; padding:8px 16px; border-radius:20px; font-weight:bold; display:inline-block; }
-        #coins { background:gold; padding:8px 16px; border-radius:20px; font-weight:bold; float:right; }
-        #player { position:absolute; bottom:50px; left:50px; font-size:40px; transition:bottom 0.1s; }
-        #police { position:absolute; bottom:50px; left:0px; font-size:40px; }
-        #ground { position:absolute; bottom:0; width:100%; height:50px; background:#8B4513; }
-        .modal { position:fixed; inset:0; background:rgba(0,0,0,0.8); display:none; align-items:center; justify-content:center; z-index:100; }
-        .modal-box { background:white; padding:30px; border-radius:12px; text-align:center; max-width:300px; }
-        .btn { background:#4CAF50; color:white; border:none; padding:15px 25px; margin:10px; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer; width:100%; }
-        .btn-blue { background:#009EE3; }
-        .btn-gold { background:#FF9800; }
-        #shop { position:fixed; bottom:10px; right:10px; font-size:30px; cursor:pointer; z-index:20; }
-        #donate { position:fixed; bottom:10px; left:10px; background:#009EE3; color:white; border:none; padding:12px 20px; border-radius:25px; font-size:16px; font-weight:bold; cursor:pointer; z-index:20; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Corre que te agarran</title>
+<style>
+html,body{margin:0;padding:0;overflow:hidden;background:#87CEEB;font-family:sans-serif}
+#game{width:100%;height:100vh;position:relative;background:linear-gradient(#87CEEB 60%, #7ED957 60%)}
+#player{position:absolute;bottom:60px;left:50px;font-size:50px;z-index:5}
+#police{position:absolute;bottom:60px;left:0px;font-size:50px;z-index:4}
+#floor{position:absolute;bottom:0;width:100%;height:60px;background:#8B4513}
+#hud{position:absolute;top:15px;left:15px;right:15px;z-index:10}
+.box{background:#fff;padding:10px 20px;border-radius:25px;font-weight:900;font-size:18px;box-shadow:0 3px 6px rgba(0,0,0,0.3)}
+#score{float:left}
+#coins{float:right;background:gold}
+#startText{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:24px;font-weight:900;color:#fff;text-shadow:2px 2px 4px #000;z-index:10}
+#gameOver{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;z-index:100}
+#box{ background:#fff;padding:30px;border-radius:15px;text-align:center}
+.btn{background:#4CAF50;color:#fff;border:0;padding:18px 30px;margin:10px 0;border-radius:10px;font-size:18px;font-weight:900;width:100%}
+.btnMp{background:#009EE3}
+#cafecito{position:fixed;bottom:15px;left:15px;z-index:20;background:#009EE3;color:#fff;border:0;padding:14px 24px;border-radius:30px;font-size:17px;font-weight:900;box-shadow:0 3px 6px rgba(0,0,0,0.3)}
+</style>
 </head>
 <body>
-    <div id="game" onclick="jump()">
-        <div id="hud">
-            <div id="score">Puntos: 0</div>
-            <div id="coins">💰 <span id="coinCount">100</span></div>
-        </div>
-        <div id="police">👮</div>
-        <div id="player">🏃</div>
-        <div id="ground"></div>
-        <button id="donate" onclick="donar(event)">☕ Cafecito</button>
-        <div id="shop" onclick="openShop(event)">🛒</div>
+<div id="game" onclick="accion()">
+    <div id="hud">
+        <div id="score" class="box">Puntos: 0</div>
+        <div id="coins" class="box">💰 0</div>
     </div>
+    <div id="startText">TOCÁ PARA EMPEZAR</div>
+    <div id="police">👮</div>
+    <div id="player">🏃</div>
+    <div id="floor"></div>
+    <button id="cafecito" onclick="donar(event)">☕ Invitame un café</button>
+</div>
 
-    <div id="gameOver" class="modal">
-        <div class="modal-box">
-            <h2>¡Te agarraron!</h2>
-            <p>Puntaje: <span id="finalScore">0</span></p>
-            <button class="btn btn-gold" onclick="revive()">Revivir - 50 💰</button>
-            <button class="btn" onclick="restart()">Jugar de nuevo</button>
-        </div>
+<div id="gameOver">
+    <div id="box">
+        <h2 style="margin:0 0 10px 0">¡Te agarraron!</h2>
+        <p style="font-size:20px;margin:10px 0">Puntaje: <b id="puntosFinal">0</b></p>
+        <button class="btn" onclick="reiniciar()">JUGAR DE NUEVO</button>
     </div>
-
-    <div id="shopModal" class="modal">
-        <div class="modal-box">
-            <h2>Tienda 💰</h2>
-            <button class="btn btn-blue" onclick="buy('500')">500 monedas - $500</button>
-            <button class="btn btn-blue" onclick="buy('2000')">2000 monedas - $1500</button>
-            <button class="btn btn-blue" onclick="buy('5000')">5000 monedas - $3000</button>
-            <button class="btn" onclick="buy('noads')">Sin Anuncios - $800</button>
-            <br><button class="btn" onclick="closeShop()">Cerrar</button>
-        </div>
-    </div>
+</div>
 
 <script>
-// ===== CONFIGURACIÓN =====
-// PEGÁ TU LINK DE MERCADO PAGO ACÁ ABAJO
-const LINK_CAFECITO = "https://mpago.la/TU_LINK_ACA"; 
-// =========================
+// PEGÁ TU LINK DE MERCADO PAGO ACÁ CUANDO LO TENGAS
+const LINK_MP = "https://www.mercadopago.com.ar";
 
-let puntos = 0, monedas = 100, jugando = false, saltando = false;
-let playerY = 50, policeX = 0, velocidad = 3;
+let jugando=false, saltando=false, puntos=0, monedas=0;
+let playerY=60, policeX=0, velocidad=4;
+let player=document.getElementById('player');
+let police=document.getElementById('police');
 
-if(localStorage.monedas) monedas = parseInt(localStorage.monedas);
-document.getElementById('coinCount').textContent = monedas;
+if(localStorage.monedas) monedas=parseInt(localStorage.monedas);
+document.getElementById('coins').innerHTML='💰 '+monedas;
 
-function jump() {
-    if(!jugando) startGame();
-    if(!saltando) {
-        saltando = true;
-        playerY = 150;
-        document.getElementById('player').style.bottom = playerY + 'px';
-        setTimeout(() => { 
-            playerY = 50; 
-            document.getElementById('player').style.bottom = playerY + 'px';
-            saltando = false;
-        }, 400);
+function accion(){
+    if(!jugando){ empezar(); return; }
+    if(!saltando){
+        saltando=true;
+        playerY=180;
+        player.style.bottom=playerY+'px';
+        setTimeout(()=>{
+            playerY=60;
+            player.style.bottom=playerY+'px';
+            saltando=false;
+        },450);
     }
 }
 
-function gameLoop() {
+function loop(){
     if(!jugando) return;
     puntos++;
-    document.getElementById('score').textContent = 'Puntos: ' + puntos;
-    policeX += velocidad;
-    document.getElementById('police').style.left = policeX + 'px';
-    if(policeX > 30 && playerY < 80) {
-        endGame();
-    } else {
-        velocidad += 0.001;
-        requestAnimationFrame(gameLoop);
+    document.getElementById('score').innerHTML='Puntos: '+puntos;
+    
+    policeX+=velocidad;
+    police.style.left=policeX+'px';
+    
+    // Si el poli te toca y no saltaste = perdiste
+    if(policeX>25 && policeX<75 && playerY<100){
+        perder();
+    }else{
+        velocidad+=0.002;
+        requestAnimationFrame(loop);
     }
 }
 
-function startGame() {
-    jugando = true;
-    puntos = 0;
-    policeX = -50;
-    velocidad = 3;
-    document.getElementById('gameOver').style.display = 'none';
-    gameLoop();
+function empezar(){
+    jugando=true;
+    puntos=0;
+    policeX=-60;
+    velocidad=4;
+    document.getElementById('startText').style.display='none';
+    document.getElementById('gameOver').style.display='none';
+    loop();
 }
 
-function endGame() {
-    jugando = false;
-    document.getElementById('finalScore').textContent = puntos;
-    document.getElementById('gameOver').style.display = 'flex';
-    monedas += Math.floor(puntos/10);
-    saveCoins();
+function perder(){
+    jugando=false;
+    document.getElementById('puntosFinal').innerText=puntos;
+    document.getElementById('gameOver').style.display='flex';
+    monedas+=Math.floor(puntos/10);
+    localStorage.monedas=monedas;
+    document.getElementById('coins').innerHTML='💰 '+monedas;
 }
 
-function revive() {
-    if(monedas >= 50) {
-        monedas -= 50;
-        saveCoins();
-        document.getElementById('gameOver').style.display = 'none';
-        policeX = -100;
-        jugando = true;
-        gameLoop();
-    } else {
-        alert('No te alcanzan las monedas. Comprá en la tienda 🛒');
-    }
+function reiniciar(){
+    empezar();
 }
 
-function restart() {
-    startGame();
-}
-
-function openShop(e) {
+function donar(e){
     e.stopPropagation();
-    document.getElementById('shopModal').style.display = 'flex';
+    window.open(LINK_MP,'_blank');
 }
-
-function closeShop() {
-    document.getElementById('shopModal').style.display = 'none';
-}
-
-function donar(e) {
-    e.stopPropagation();
-    window.open(LINK_CAFECITO, '_blank');
-}
-
-function buy(item) {
-    alert('Cuando lo subas a Play Store, acá se abre Google Play para pagar.');
-    if(item === '500') monedas += 500;
-    if(item === '2000') monedas += 2000;
-    if(item === '5000') monedas += 5000;
-    if(item === 'noads') alert('Anuncios desactivados!');
-    saveCoins();
-    closeShop();
-}
-
-function saveCoins() {
-    localStorage.monedas = monedas;
-    document.getElementById('coinCount').textContent = monedas;
-}
-
-startGame();
 </script>
 </body>
 </html>
