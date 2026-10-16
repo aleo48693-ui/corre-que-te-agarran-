@@ -30,8 +30,7 @@ html,body{margin:0;padding:0;overflow:hidden;background:#222;font-family:Arial;u
 #gameOver{position:fixed;inset:0;background:rgba(0,0,0,0.95);display:none;align-items:center;justify-content:center;z-index:100}
 #box{background:#fff;padding:30px;border-radius:15px;text-align:center;max-width:340px}
 .btn{background:#4CAF50;color:#fff;border:0;padding:18px 30px;margin:10px 0;border-radius:10px;font-size:18px;font-weight:900;width:100%}
-.btnAd{background:#FF9800;font-size:20px;animation:pulse 1s infinite}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.btnAd{background:#2196F3;font-size:20px}
 .btnMp{background:#009EE3}
 #startText{position:absolute;top:35%;left:50%;transform:translate(-50%,-50%);font-size:22px;font-weight:900;color:#fff;text-shadow:2px 2px 4px #000;z-index:10;text-align:center}
 .explosion{position:absolute;font-size:70px;animation:boom 0.5s;z-index:15}
@@ -50,10 +49,10 @@ html,body{margin:0;padding:0;overflow:hidden;background:#222;font-family:Arial;u
         <div id="coins" class="box">💰 0</div>
         <div id="lives" class="box">❤️ 1</div>
     </div>
-    <div id="startText">TOCÁ ◀️ ▶️ PARA ESQUIVAR<br>AGARRÁ LAS 💰<br>CHOCÁS = MIRÁS ANUNCIO</div>
+    <div id="startText">TOCÁ ◀️ ▶️ PARA ESQUIVAR<br>AGARRÁ LAS 💰<br>CHOCÁS = GAME OVER</div>
     <div id="player">🚗</div>
     
-    <!-- BANNER QUE TE PAGA 24/7 -->
+    <!-- Banner de anuncio -->
     <div id="bannerAd">
         <ins class="adsbygoogle"
              style="display:inline-block;width:320px;height:50px"
@@ -73,11 +72,10 @@ html,body{margin:0;padding:0;overflow:hidden;background:#222;font-family:Arial;u
         <p style="font-size:20px;margin:10px 0">Recorriste: <b id="kmFinal">0</b> KM</p>
         <p style="font-size:18px;margin:10px 0">Monedas: <b id="monedasFinal">0</b> 💰</p>
         <button class="btn btnAd" onclick="verAnuncioRevive()">
-            📺 VER ANUNCIO PARA REVIVIR<br>
-            <span style="font-size:13px">30 seg - Gratis para vos</span>
+            📺 VER ANUNCIO PARA CONTINUAR
         </button>
-        <p style="font-size:11px;color:#666;margin:5px 0">Si ves el anuncio completo, yo cobro y vos revivís</p>
-        <button class="btn" onclick="reiniciar()">JUGAR DE NUEVO GRATIS</button>
+        <p style="font-size:12px;color:#666;margin:5px 0">Mirá 30 segundos y seguís jugando</p>
+        <button class="btn" onclick="reiniciar()">EMPEZAR DE NUEVO</button>
         <button class="btn btnMp" onclick="donar()">☕ INVITAME UN CAFÉ $500</button>
     </div>
 </div>
@@ -87,14 +85,13 @@ html,body{margin:0;padding:0;overflow:hidden;background:#222;font-family:Arial;u
 const LINK_CAFECITO = "https://mpago.la/TU_LINK_ACA";
 
 let jugando=false, km=0, monedas=0, vidas=1;
-let carril=1; // 0=izq, 1=medio, 2=der
+let carril=1;
 let enemigos=[], monedasMapa=[];
 let velocidad=6;
 let player=document.getElementById('player');
 let game=document.getElementById('game');
 let ultimosSpawn=0;
 
-// Cargar monedas guardadas
 if(localStorage.monedas) monedas=parseInt(localStorage.monedas);
 document.getElementById('coins').innerHTML='💰 '+monedas;
 
@@ -109,7 +106,7 @@ function mover(dir){
 }
 
 function crearEnemigo(){
-    const tipos = ['🚓','🚕','🚙','🚑','🚐'];
+    const tipos = ['🚓','🚕','🚙','🚑'];
     const enemigo = document.createElement('div');
     enemigo.className = 'car';
     enemigo.innerHTML = tipos[Math.floor(Math.random()*tipos.length)];
@@ -138,29 +135,21 @@ function loop(){
     km++;
     document.getElementById('score').innerHTML='KM: '+Math.floor(km/10);
     
-    // Mover enemigos - VIENEN DE FRENTE
     enemigos.forEach((e,i)=>{
         e.y += velocidad;
         e.el.style.top = e.y + 'px';
-        
-        // Choque
         if(e.y > window.innerHeight-180 && e.y < window.innerHeight-80 && e.carril === carril){
             chocar(e);
         }
-        
-        // Borrar si se fue
         if(e.y > window.innerHeight){
             e.el.remove();
             enemigos.splice(i,1);
         }
     });
     
-    // Mover monedas
     monedasMapa.forEach((m,i)=>{
         m.y += velocidad;
         m.el.style.top = m.y + 'px';
-        
-        // Agarrar moneda
         if(m.y > window.innerHeight-180 && m.y < window.innerHeight-80 && m.carril === carril){
             monedas++;
             document.getElementById('coins').innerHTML='💰 '+monedas;
@@ -168,18 +157,17 @@ function loop(){
             m.el.remove();
             monedasMapa.splice(i,1);
         }
-        
         if(m.y > window.innerHeight){
             m.el.remove();
             monedasMapa.splice(i,1);
         }
     });
     
-    // Spawn enemigos y monedas
+    // MENOS POLIS - antes 0.6, ahora 0.3
     ultimosSpawn++;
-    if(ultimosSpawn > 30){
-        if(Math.random() < 0.6) crearEnemigo();
-        if(Math.random() < 0.4) crearMoneda();
+    if(ultimosSpawn > 35){
+        if(Math.random() < 0.3) crearEnemigo(); // 50% menos polis
+        if(Math.random() < 0.5) crearMoneda(); // Más monedas
         ultimosSpawn = 0;
     }
     
@@ -192,7 +180,6 @@ function chocar(enemigo){
     vidas--;
     document.getElementById('lives').innerHTML='❤️ '+vidas;
     
-    // Explosión
     const exp = document.createElement('div');
     exp.className='explosion';
     exp.innerHTML='💥';
@@ -231,21 +218,17 @@ function gameOver(){
     document.getElementById('kmFinal').innerText=Math.floor(km/10);
     document.getElementById('monedasFinal').innerText=monedas;
     document.getElementById('gameOver').style.display='flex';
-    
-    // Mostrar anuncio intersticial = PLATA PARA VOS
     mostrarAnuncioIntersticial();
 }
 
 function verAnuncioRevive(){
-    // ANUNCIO REWARD QUE TE PAGA
-    // En Android con AdMob, esto muestra video de 30s
-    // Si lo ve completo: revivís Y VOS COBRÁS $0.01-$0.05 USD
+    // El jugador ve anuncio para revivir
+    // NO SE MENCIONA QUE LA PLATA ES TUYA
     
     if(typeof Android !== 'undefined' && Android.mostrarReward){
-        Android.mostrarReward(); // Llama al código nativo Android
+        Android.mostrarReward();
     } else {
-        // En web o test: simulamos
-        let confirmar = confirm('En la app Android acá se ve un video de 30 segundos.\n\nSi lo ves completo:\n✅ Revivís con 1 vida\n✅ El creador cobra $0.01-$0.05 USD\n\n¿Simular que lo viste?');
+        let confirmar = confirm('Para continuar tenés que ver un anuncio de 30 segundos.\n\n¿Querés verlo?');
         if(confirmar) pagoExitosoReward();
     }
 }
@@ -260,7 +243,6 @@ function pagoExitosoReward(){
 }
 
 function mostrarAnuncioIntersticial(){
-    // Anuncio pantalla completa cada muerte = MÁS PLATA PARA VOS
     if(typeof Android !== 'undefined' && Android.mostrarIntersticial){
         Android.mostrarIntersticial();
     }
