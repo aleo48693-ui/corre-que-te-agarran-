@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Corre que te agarran</title>
+<style>
+body{background:linear-gradient(135deg,#667eea,#764ba2);display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;font-family:Arial;color:white}
+#game{text-align:center;background:rgba(0,0,0,.5);padding:30px;border-radius:20px;max-width:400px}
+h1{font-size:2em;margin-bottom:20px}
+#score{font-size:1.5em;margin:20px 0}
+button{background:#4CAF50;color:white;border:none;padding:15px 30px;font-size:1.2em;border-radius:10px;cursor:pointer;margin:10px}
+.ad{background:#ff4444;padding:20px;margin:20px 0;border-radius:10px;font-size:.9em}
+</style>
+</head>
+<body>
+<div id="game">
+<h1>🏃 Corre que te agarran</h1>
+<div id="score">Puntos: <span id="puntos">0</span></div>
+<button onclick="correr()">¡CORRER!</button>
+<div class="ad">📢 ESPACIO PARA ADS 📢<br>Acá va tu código de AdMob/AdSense</div>
+<button onclick="reiniciar()">Reiniciar</button>
+</div>
+<script>
+let puntos=0;
+function correr(){puntos+=Math.floor(Math.random()*10)+1;document.getElementById('puntos').textContent=puntos;if(puntos>100)alert('¡Ganaste! Llegaste a '+puntos+' puntos')}
+function reiniciar(){puntos=0;document.getElementById('puntos').textContent=puntos}
+</script>
+</body>
+</html>
