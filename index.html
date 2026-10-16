@@ -106,6 +106,25 @@
             font-size: 14px;
             z-index: 20;
         }
+        #donateBtn {
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            background: #009EE3;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+            z-index: 999;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
     </style>
 </head>
 <body>
@@ -122,6 +141,10 @@
             <button id="startBtn">Jugar de nuevo</button>
         </div>
     </div>
+    
+    <a id="donateBtn" href="https://link.mercadopago.com.ar/ortiz.164.silo.mp" target="_blank">
+        ☕ Invitame un café
+    </a>
 
     <script>
         const player = document.getElementById('player');
@@ -234,7 +257,8 @@
             }
         });
         
-        document.addEventListener('click', () => {
+        document.addEventListener('click', (e) => {
+            if (e.target.id === 'donateBtn') return;
             if (!gameRunning && gameOverEl.style.display !== 'block') {
                 startGame();
             } else if (gameRunning) {
@@ -243,6 +267,7 @@
         });
         
         document.addEventListener('touchstart', (e) => {
+            if (e.target.id === 'donateBtn') return;
             e.preventDefault();
             if (!gameRunning && gameOverEl.style.display !== 'block') {
                 startGame();
