@@ -6,281 +6,161 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Corre que te agarran</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: linear-gradient(#87CEEB, #E0F6FF);
-            font-family: Arial, sans-serif;
-            overflow: hidden;
-        }
-        #game {
-            position: relative;
-            width: 800px;
-            height: 400px;
-            max-width: 95vw;
-            max-height: 70vh;
-            border: 4px solid #333;
-            background: #90EE90;
-            overflow: hidden;
-            border-radius: 10px;
-        }
-        #player {
-            position: absolute;
-            bottom: 20px;
-            left: 80px;
-            font-size: 50px;
-            z-index: 10;
-        }
-        #cop {
-            position: absolute;
-            bottom: 20px;
-            left: 10px;
-            font-size: 50px;
-            z-index: 10;
-        }
-        #money {
-            position: absolute;
-            bottom: 60px;
-            font-size: 35px;
-            z-index: 5;
-        }
-        #score {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            font-size: 28px;
-            font-weight: bold;
-            color: #333;
-            background: rgba(255,255,255,0.7);
-            padding: 5px 15px;
-            border-radius: 20px;
-            z-index: 20;
-        }
-        #gameOver {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            display: none;
-            z-index: 100;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-        }
-        #startBtn {
-            padding: 15px 30px;
-            font-size: 20px;
-            background: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .ground {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 20px;
-            background: #8B4513;
-            z-index: 1;
-        }
-        #instructions {
-            position: absolute;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255,255,255,0.8);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            z-index: 20;
-        }
-        #donateBtn {
-            position: fixed;
-            bottom: 15px;
-            right: 15px;
-            background: #009EE3;
-            color: white;
-            padding: 12px 18px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 16px;
-            z-index: 999;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:Arial; }
+        body { background:#87CEEB; overflow:hidden; }
+        #game { width:100vw; height:100vh; position:relative; background:#7ED957; }
+        #hud { position:absolute; top:10px; left:10px; right:10px; z-index:10; }
+        #score { background:#fff; padding:8px 16px; border-radius:20px; font-weight:bold; display:inline-block; }
+        #coins { background:gold; padding:8px 16px; border-radius:20px; font-weight:bold; float:right; }
+        #player { position:absolute; bottom:50px; left:50px; font-size:40px; transition:bottom 0.1s; }
+        #police { position:absolute; bottom:50px; left:0px; font-size:40px; }
+        #ground { position:absolute; bottom:0; width:100%; height:50px; background:#8B4513; }
+        .modal { position:fixed; inset:0; background:rgba(0,0,0,0.8); display:none; align-items:center; justify-content:center; z-index:100; }
+        .modal-box { background:white; padding:30px; border-radius:12px; text-align:center; max-width:300px; }
+        .btn { background:#4CAF50; color:white; border:none; padding:15px 25px; margin:10px; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer; width:100%; }
+        .btn-blue { background:#009EE3; }
+        .btn-gold { background:#FF9800; }
+        #shop { position:fixed; bottom:10px; right:10px; font-size:30px; cursor:pointer; z-index:20; }
+        #donate { position:fixed; bottom:10px; left:10px; background:#009EE3; color:white; border:none; padding:12px 20px; border-radius:25px; font-size:16px; font-weight:bold; cursor:pointer; z-index:20; }
     </style>
 </head>
 <body>
-    <div id="game">
-        <div class="ground"></div>
-        <div id="score">Puntos: 0</div>
+    <div id="game" onclick="jump()">
+        <div id="hud">
+            <div id="score">Puntos: 0</div>
+            <div id="coins">💰 <span id="coinCount">100</span></div>
+        </div>
+        <div id="police">👮</div>
         <div id="player">🏃</div>
-        <div id="cop">👮</div>
-        <div id="money">💰</div>
-        <div id="instructions">Tocá la pantalla para SALTAR</div>
-        <div id="gameOver">
+        <div id="ground"></div>
+        <button id="donate" onclick="donar(event)">☕ Cafecito</button>
+        <div id="shop" onclick="openShop(event)">🛒</div>
+    </div>
+
+    <div id="gameOver" class="modal">
+        <div class="modal-box">
             <h2>¡Te agarraron!</h2>
-            <p id="finalScore">Puntaje: 0</p>
-            <button id="startBtn">Jugar de nuevo</button>
+            <p>Puntaje: <span id="finalScore">0</span></p>
+            <button class="btn btn-gold" onclick="revive()">Revivir - 50 💰</button>
+            <button class="btn" onclick="restart()">Jugar de nuevo</button>
         </div>
     </div>
-    
-    <a id="donateBtn" href="https://link.mercadopago.com.ar/ortiz.164.silo.mp" target="_blank">
-        ☕ Invitame un café
-    </a>
 
-    <script>
-        const player = document.getElementById('player');
-        const cop = document.getElementById('cop');
-        const money = document.getElementById('money');
-        const scoreEl = document.getElementById('score');
-        const gameOverEl = document.getElementById('gameOver');
-        const finalScoreEl = document.getElementById('finalScore');
-        const startBtn = document.getElementById('startBtn');
-        const instructions = document.getElementById('instructions');
-        
-        let isJumping = false;
-        let gameRunning = false;
-        let score = 0;
-        let copPos = 10;
-        let moneyPos = 800;
-        let gameSpeed = 4;
-        let playerBottom = 20;
-        
-        function jump() {
-            if (!isJumping && gameRunning) {
-                isJumping = true;
-                let jumpVelocity = 15;
-                const jumpInterval = setInterval(() => {
-                    if (jumpVelocity <= -15) {
-                        clearInterval(jumpInterval);
-                        isJumping = false;
-                        playerBottom = 20;
-                        player.style.bottom = playerBottom + 'px';
-                    } else {
-                        playerBottom += jumpVelocity;
-                        if (playerBottom < 20) playerBottom = 20;
-                        player.style.bottom = playerBottom + 'px';
-                        jumpVelocity -= 0.8;
-                    }
-                }, 20);
-            }
-        }
-        
-        function startGame() {
-            gameRunning = true;
-            score = 0;
-            copPos = 10;
-            moneyPos = 800;
-            gameSpeed = 4;
-            playerBottom = 20;
-            isJumping = false;
-            gameOverEl.style.display = 'none';
-            instructions.style.display = 'none';
-            scoreEl.textContent = 'Puntos: 0';
-            player.style.bottom = '20px';
-            cop.style.left = '10px';
-            updateGame();
-        }
-        
-        function updateGame() {
-            if (!gameRunning) return;
-            
-            copPos += gameSpeed * 0.9;
-            cop.style.left = copPos + 'px';
-            
-            moneyPos -= gameSpeed;
-            if (moneyPos < -50) {
-                moneyPos = 800 + Math.random() * 300;
-                money.style.bottom = (Math.random() > 0.6 ? 60 : 20) + 'px';
-            }
-            money.style.left = moneyPos + 'px';
-            
-            const playerRect = player.getBoundingClientRect();
-            const moneyRect = money.getBoundingClientRect();
-            if (playerRect.left < moneyRect.right && 
-                playerRect.right > moneyRect.left && 
-                playerRect.top < moneyRect.bottom && 
-                playerRect.bottom > moneyRect.top) {
-                score += 10;
-                scoreEl.textContent = 'Puntos: ' + score;
-                moneyPos = 800 + Math.random() * 300;
-                gameSpeed += 0.05;
-            }
-            
-            const copRect = cop.getBoundingClientRect();
-            if (playerRect.left < copRect.right - 15 && 
-                playerRect.right > copRect.left + 15 && 
-                playerBottom < 60) {
-                gameOver();
-                return;
-            }
-            
-            if (copPos > 850) {
-                copPos = -60;
-            }
-            
-            requestAnimationFrame(updateGame);
-        }
-        
-        function gameOver() {
-            gameRunning = false;
-            finalScoreEl.textContent = 'Puntaje: ' + score;
-            gameOverEl.style.display = 'block';
-            instructions.style.display = 'block';
-        }
-        
-        startBtn.addEventListener('click', startGame);
-        
-        document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space') {
-                e.preventDefault();
-                if (!gameRunning) startGame();
-                else jump();
-            }
-        });
-        
-        document.addEventListener('click', (e) => {
-            if (e.target.id === 'donateBtn') return;
-            if (!gameRunning && gameOverEl.style.display !== 'block') {
-                startGame();
-            } else if (gameRunning) {
-                jump();
-            }
-        });
-        
-        document.addEventListener('touchstart', (e) => {
-            if (e.target.id === 'donateBtn') return;
-            e.preventDefault();
-            if (!gameRunning && gameOverEl.style.display !== 'block') {
-                startGame();
-            } else if (gameRunning) {
-                jump();
-            }
-        });
-        
-        setTimeout(() => {
-            if (window.innerWidth < 768 && !gameRunning) {
-                startGame();
-            }
-        }, 1000);
-    </script>
+    <div id="shopModal" class="modal">
+        <div class="modal-box">
+            <h2>Tienda 💰</h2>
+            <button class="btn btn-blue" onclick="buy('500')">500 monedas - $500</button>
+            <button class="btn btn-blue" onclick="buy('2000')">2000 monedas - $1500</button>
+            <button class="btn btn-blue" onclick="buy('5000')">5000 monedas - $3000</button>
+            <button class="btn" onclick="buy('noads')">Sin Anuncios - $800</button>
+            <br><button class="btn" onclick="closeShop()">Cerrar</button>
+        </div>
+    </div>
+
+<script>
+// ===== CONFIGURACIÓN =====
+// PEGÁ TU LINK DE MERCADO PAGO ACÁ ABAJO
+const LINK_CAFECITO = "https://mpago.la/TU_LINK_ACA"; 
+// =========================
+
+let puntos = 0, monedas = 100, jugando = false, saltando = false;
+let playerY = 50, policeX = 0, velocidad = 3;
+
+if(localStorage.monedas) monedas = parseInt(localStorage.monedas);
+document.getElementById('coinCount').textContent = monedas;
+
+function jump() {
+    if(!jugando) startGame();
+    if(!saltando) {
+        saltando = true;
+        playerY = 150;
+        document.getElementById('player').style.bottom = playerY + 'px';
+        setTimeout(() => { 
+            playerY = 50; 
+            document.getElementById('player').style.bottom = playerY + 'px';
+            saltando = false;
+        }, 400);
+    }
+}
+
+function gameLoop() {
+    if(!jugando) return;
+    puntos++;
+    document.getElementById('score').textContent = 'Puntos: ' + puntos;
+    policeX += velocidad;
+    document.getElementById('police').style.left = policeX + 'px';
+    if(policeX > 30 && playerY < 80) {
+        endGame();
+    } else {
+        velocidad += 0.001;
+        requestAnimationFrame(gameLoop);
+    }
+}
+
+function startGame() {
+    jugando = true;
+    puntos = 0;
+    policeX = -50;
+    velocidad = 3;
+    document.getElementById('gameOver').style.display = 'none';
+    gameLoop();
+}
+
+function endGame() {
+    jugando = false;
+    document.getElementById('finalScore').textContent = puntos;
+    document.getElementById('gameOver').style.display = 'flex';
+    monedas += Math.floor(puntos/10);
+    saveCoins();
+}
+
+function revive() {
+    if(monedas >= 50) {
+        monedas -= 50;
+        saveCoins();
+        document.getElementById('gameOver').style.display = 'none';
+        policeX = -100;
+        jugando = true;
+        gameLoop();
+    } else {
+        alert('No te alcanzan las monedas. Comprá en la tienda 🛒');
+    }
+}
+
+function restart() {
+    startGame();
+}
+
+function openShop(e) {
+    e.stopPropagation();
+    document.getElementById('shopModal').style.display = 'flex';
+}
+
+function closeShop() {
+    document.getElementById('shopModal').style.display = 'none';
+}
+
+function donar(e) {
+    e.stopPropagation();
+    window.open(LINK_CAFECITO, '_blank');
+}
+
+function buy(item) {
+    alert('Cuando lo subas a Play Store, acá se abre Google Play para pagar.');
+    if(item === '500') monedas += 500;
+    if(item === '2000') monedas += 2000;
+    if(item === '5000') monedas += 5000;
+    if(item === 'noads') alert('Anuncios desactivados!');
+    saveCoins();
+    closeShop();
+}
+
+function saveCoins() {
+    localStorage.monedas = monedas;
+    document.getElementById('coinCount').textContent = monedas;
+}
+
+startGame();
+</script>
 </body>
 </html>
