@@ -1,30 +1,261 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Corre que te agarran</title>
-<style>
-body{background:linear-gradient(135deg,#667eea,#764ba2);display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;font-family:Arial;color:white}
-#game{text-align:center;background:rgba(0,0,0,.5);padding:30px;border-radius:20px;max-width:400px}
-h1{font-size:2em;margin-bottom:20px}
-#score{font-size:1.5em;margin:20px 0}
-button{background:#4CAF50;color:white;border:none;padding:15px 30px;font-size:1.2em;border-radius:10px;cursor:pointer;margin:10px}
-.ad{background:#ff4444;padding:20px;margin:20px 0;border-radius:10px;font-size:.9em}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Corre que te agarran</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(#87CEEB, #E0F6FF);
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        #game {
+            position: relative;
+            width: 800px;
+            height: 400px;
+            max-width: 95vw;
+            max-height: 70vh;
+            border: 4px solid #333;
+            background: #90EE90;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+        #player {
+            position: absolute;
+            bottom: 20px;
+            left: 80px;
+            font-size: 50px;
+            z-index: 10;
+        }
+        #cop {
+            position: absolute;
+            bottom: 20px;
+            left: 10px;
+            font-size: 50px;
+            z-index: 10;
+        }
+        #money {
+            position: absolute;
+            bottom: 60px;
+            font-size: 35px;
+            z-index: 5;
+        }
+        #score {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            background: rgba(255,255,255,0.7);
+            padding: 5px 15px;
+            border-radius: 20px;
+            z-index: 20;
+        }
+        #gameOver {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            display: none;
+            z-index: 100;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        #startBtn {
+            padding: 15px 30px;
+            font-size: 20px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .ground {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 20px;
+            background: #8B4513;
+            z-index: 1;
+        }
+        #instructions {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,255,255,0.8);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 20;
+        }
+    </style>
 </head>
 <body>
-<div id="game">
-<h1>🏃 Corre que te agarran</h1>
-<div id="score">Puntos: <span id="puntos">0</span></div>
-<button onclick="correr()">¡CORRER!</button>
-<div class="ad">📢 ESPACIO PARA ADS 📢<br>Acá va tu código de AdMob/AdSense</div>
-<button onclick="reiniciar()">Reiniciar</button>
-</div>
-<script>
-let puntos=0;
-function correr(){puntos+=Math.floor(Math.random()*10)+1;document.getElementById('puntos').textContent=puntos;if(puntos>100)alert('¡Ganaste! Llegaste a '+puntos+' puntos')}
-function reiniciar(){puntos=0;document.getElementById('puntos').textContent=puntos}
-</script>
+    <div id="game">
+        <div class="ground"></div>
+        <div id="score">Puntos: 0</div>
+        <div id="player">🏃</div>
+        <div id="cop">👮</div>
+        <div id="money">💰</div>
+        <div id="instructions">Tocá la pantalla para SALTAR</div>
+        <div id="gameOver">
+            <h2>¡Te agarraron!</h2>
+            <p id="finalScore">Puntaje: 0</p>
+            <button id="startBtn">Jugar de nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        const player = document.getElementById('player');
+        const cop = document.getElementById('cop');
+        const money = document.getElementById('money');
+        const scoreEl = document.getElementById('score');
+        const gameOverEl = document.getElementById('gameOver');
+        const finalScoreEl = document.getElementById('finalScore');
+        const startBtn = document.getElementById('startBtn');
+        const instructions = document.getElementById('instructions');
+        
+        let isJumping = false;
+        let gameRunning = false;
+        let score = 0;
+        let copPos = 10;
+        let moneyPos = 800;
+        let gameSpeed = 4;
+        let playerBottom = 20;
+        
+        function jump() {
+            if (!isJumping && gameRunning) {
+                isJumping = true;
+                let jumpVelocity = 15;
+                const jumpInterval = setInterval(() => {
+                    if (jumpVelocity <= -15) {
+                        clearInterval(jumpInterval);
+                        isJumping = false;
+                        playerBottom = 20;
+                        player.style.bottom = playerBottom + 'px';
+                    } else {
+                        playerBottom += jumpVelocity;
+                        if (playerBottom < 20) playerBottom = 20;
+                        player.style.bottom = playerBottom + 'px';
+                        jumpVelocity -= 0.8;
+                    }
+                }, 20);
+            }
+        }
+        
+        function startGame() {
+            gameRunning = true;
+            score = 0;
+            copPos = 10;
+            moneyPos = 800;
+            gameSpeed = 4;
+            playerBottom = 20;
+            isJumping = false;
+            gameOverEl.style.display = 'none';
+            instructions.style.display = 'none';
+            scoreEl.textContent = 'Puntos: 0';
+            player.style.bottom = '20px';
+            cop.style.left = '10px';
+            updateGame();
+        }
+        
+        function updateGame() {
+            if (!gameRunning) return;
+            
+            copPos += gameSpeed * 0.9;
+            cop.style.left = copPos + 'px';
+            
+            moneyPos -= gameSpeed;
+            if (moneyPos < -50) {
+                moneyPos = 800 + Math.random() * 300;
+                money.style.bottom = (Math.random() > 0.6 ? 60 : 20) + 'px';
+            }
+            money.style.left = moneyPos + 'px';
+            
+            const playerRect = player.getBoundingClientRect();
+            const moneyRect = money.getBoundingClientRect();
+            if (playerRect.left < moneyRect.right && 
+                playerRect.right > moneyRect.left && 
+                playerRect.top < moneyRect.bottom && 
+                playerRect.bottom > moneyRect.top) {
+                score += 10;
+                scoreEl.textContent = 'Puntos: ' + score;
+                moneyPos = 800 + Math.random() * 300;
+                gameSpeed += 0.05;
+            }
+            
+            const copRect = cop.getBoundingClientRect();
+            if (playerRect.left < copRect.right - 15 && 
+                playerRect.right > copRect.left + 15 && 
+                playerBottom < 60) {
+                gameOver();
+                return;
+            }
+            
+            if (copPos > 850) {
+                copPos = -60;
+            }
+            
+            requestAnimationFrame(updateGame);
+        }
+        
+        function gameOver() {
+            gameRunning = false;
+            finalScoreEl.textContent = 'Puntaje: ' + score;
+            gameOverEl.style.display = 'block';
+            instructions.style.display = 'block';
+        }
+        
+        startBtn.addEventListener('click', startGame);
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                if (!gameRunning) startGame();
+                else jump();
+            }
+        });
+        
+        document.addEventListener('click', () => {
+            if (!gameRunning && gameOverEl.style.display !== 'block') {
+                startGame();
+            } else if (gameRunning) {
+                jump();
+            }
+        });
+        
+        document.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (!gameRunning && gameOverEl.style.display !== 'block') {
+                startGame();
+            } else if (gameRunning) {
+                jump();
+            }
+        });
+        
+        setTimeout(() => {
+            if (window.innerWidth < 768 && !gameRunning) {
+                startGame();
+            }
+        }, 1000);
+    </script>
 </body>
 </html>
