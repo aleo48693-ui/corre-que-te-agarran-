@@ -3,115 +3,168 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Corre y Junta Guita</title>
+<title>Turbo Escape</title>
 
-<!-- Google AdMob - PONÉ TU ID ACÁ CUANDO LO TENGAS -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-TU_ID_ADMOB"
      crossorigin="anonymous"></script>
 
 <style>
-html,body{margin:0;padding:0;overflow:hidden;background:#222;font-family:Arial;user-select:none}
-#game{width:100%;height:100vh;position:relative;background:#333;perspective:600px}
-#road{position:absolute;width:100%;height:200%;left:0;top:-100%;background:repeating-linear-gradient(0deg,#444 0px,#444 40px,#555 40px,#555 80px);animation:scroll 0.5s linear infinite}
-@keyframes scroll{0%{transform:translateY(0)}100%{transform:translateY(80px)}}
-.lane{position:absolute;width:4px;height:100%;background:yellow;opacity:0.6;left:50%;transform:translateX(-50%)}
-#player{position:absolute;bottom:100px;left:50%;transform:translateX(-50%);font-size:55px;z-index:10;transition:left 0.15s}
-.car{position:absolute;font-size:55px;z-index:9}
-.coin{position:absolute;font-size:40px;z-index:8;animation:spin 1s linear infinite}
+html,body{margin:0;padding:0;overflow:hidden;background:#1a1a2e;font-family:Arial;user-select:none;-webkit-user-select:none}
+#game{width:100%;height:100vh;position:relative;background:linear-gradient(180deg,#0f3460 0%,#16213e 100%);touch-action:none}
+#road{position:absolute;width:100%;height:200%;left:0;top:-100%;background:repeating-linear-gradient(0deg,#2a2a2a 0px,#2a2a2a 60px,#333 60px,#333 120px);animation:scroll 0.3s linear infinite}
+@keyframes scroll{0%{transform:translateY(0)}100%{transform:translateY(120px)}}
+.lane{position:absolute;width:6px;height:100%;background:repeating-linear-gradient(0deg,#ffeb3b 0px,#ffeb3b 30px,transparent 30px,transparent 60px);opacity:0.8}
+#player{position:absolute;bottom:120px;left:50%;transform:translateX(-50%);font-size:60px;z-index:10;transition:left 0.15s}
+#conductor{position:absolute;top:-15px;left:50%;transform:translateX(-50%);font-size:30px;display:none;animation:asomar 0.3s}
+@keyframes asomar{0%{transform:translateX(-50%) translateY(20px)}100%{transform:translateX(-50%) translateY(0)}}
+.car{position:absolute;font-size:60px;z-index:9}
+.coin{position:absolute;font-size:45px;z-index:8;animation:spin 0.8s linear infinite,glow 1s ease-in-out infinite}
+.powerup{position:absolute;font-size:45px;z-index:8;animation:float 1s ease-in-out infinite}
 @keyframes spin{0%{transform:rotateY(0deg)}100%{transform:rotateY(360deg)}}
+@keyframes glow{0%,100%{filter:drop-shadow(0 0 5px gold)}50%{filter:drop-shadow(0 0 15px gold)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 #hud{position:absolute;top:15px;left:15px;right:15px;z-index:20}
-.box{background:rgba(255,255,255,0.95);padding:10px 20px;border-radius:25px;font-weight:900;font-size:18px;box-shadow:0 3px 6px rgba(0,0,0,0.5)}
+.box{background:linear-gradient(135deg,rgba(255,255,255,0.95),rgba(200,200,200,0.95));padding:12px 22px;border-radius:30px;font-weight:900;font-size:18px;box-shadow:0 4px 15px rgba(0,0,0,0.4);border:2px solid rgba(255,255,255,0.3)}
 #score{float:left}
-#coins{float:right;background:gold}
-#lives{position:absolute;top:60px;left:15px;background:#f44336;color:#fff}
-#controls{position:fixed;bottom:20px;left:0;right:0;display:flex;justify-content:center;gap:40px;z-index:20}
-.ctrlBtn{background:rgba(255,255,255,0.3);color:#fff;border:3px solid #fff;width:80px;height:80px;border-radius:50%;font-size:40px;font-weight:900}
-.ctrlBtn:active{background:rgba(255,255,255,0.6)}
-#gameOver{position:fixed;inset:0;background:rgba(0,0,0,0.95);display:none;align-items:center;justify-content:center;z-index:100}
-#box{background:#fff;padding:30px;border-radius:15px;text-align:center;max-width:340px}
-.btn{background:#4CAF50;color:#fff;border:0;padding:18px 30px;margin:10px 0;border-radius:10px;font-size:18px;font-weight:900;width:100%}
-.btnAd{background:#2196F3;font-size:20px}
-.btnMp{background:#009EE3}
-#startText{position:absolute;top:35%;left:50%;transform:translate(-50%,-50%);font-size:22px;font-weight:900;color:#fff;text-shadow:2px 2px 4px #000;z-index:10;text-align:center}
-.explosion{position:absolute;font-size:70px;animation:boom 0.5s;z-index:15}
-@keyframes boom{0%{transform:scale(0)}50%{transform:scale(1.8)}100%{transform:scale(1);opacity:0}}
-#bannerAd{position:fixed;bottom:115px;left:0;right:0;z-index:15;text-align:center}
+#coins{float:right;background:linear-gradient(135deg,gold,#ff9800)}
+#lives{position:absolute;top:65px;left:15px;background:linear-gradient(135deg,#f44336,#d32f2f);color:#fff}
+#combo{position:absolute;top:65px;right:15px;background:linear-gradient(135deg,#9c27b0,#7b1fa2);color:#fff;display:none}
+#level{position:absolute;top:115px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#00bcd4,#0097a7);color:#fff;font-size:16px}
+#gameOver{position:fixed;inset:0;background:rgba(0,0,0,0.97);display:none;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(5px)}
+#box{background:linear-gradient(135deg,#fff,#f5f5f5);padding:35px;border-radius:20px;text-align:center;max-width:360px;box-shadow:0 10px 40px rgba(0,0,0,0.5)}
+.btn{background:linear-gradient(135deg,#4CAF50,#45a049);color:#fff;border:0;padding:20px 35px;margin:12px 0;border-radius:12px;font-size:19px;font-weight:900;width:100%;box-shadow:0 4px 15px rgba(76,175,80,0.4)}
+.btnAd{background:linear-gradient(135deg,#2196F3,#1976D2);font-size:21px;animation:pulse 1.5s infinite;box-shadow:0 4px 15px rgba(33,150,243,0.5)}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+.btnMp{background:linear-gradient(135deg,#009EE3,#0084c7)}
+#startText{position:absolute;top:30%;left:50%;transform:translate(-50%,-50%);font-size:26px;font-weight:900;color:#fff;text-shadow:0 0 20px #00bcd4,2px 2px 4px #000;z-index:10;text-align:center;line-height:1.5}
+.explosion{position:absolute;font-size:80px;animation:boom 0.6s;z-index:15}
+@keyframes boom{0%{transform:scale(0) rotate(0deg)}50%{transform:scale(2) rotate(180deg)}100%{transform:scale(1) rotate(360deg);opacity:0}}
+#bannerAd{position:fixed;bottom:15px;left:0;right:0;z-index:15;text-align:center}
+.shield{position:absolute;width:80px;height:80px;border:3px solid #00bcd4;border-radius:50%;animation:shield 0.5s infinite;pointer-events:none}
+@keyframes shield{0%,100%{opacity:0.3;transform:scale(1)}50%{opacity:0.8;transform:scale(1.1)}}
+.risa{position:absolute;top:-40px;left:50%;transform:translateX(-50%);font-size:25px;font-weight:900;color:#ffeb3b;text-shadow:2px 2px 4px #000;animation:subir 0.6s;pointer-events:none}
+@keyframes subir{0%{opacity:1;transform:translateX(-50%) translateY(0)}100%{opacity:0;transform:translateX(-50%) translateY(-40px)}}
 </style>
 </head>
 <body>
 <div id="game">
     <div id="road">
-        <div class="lane" style="left:33.33%"></div>
-        <div class="lane" style="left:66.66%"></div>
+        <div class="lane" style="left:25%"></div>
+        <div class="lane" style="left:50%"></div>
+        <div class="lane" style="left:75%"></div>
     </div>
     <div id="hud">
         <div id="score" class="box">KM: 0</div>
         <div id="coins" class="box">💰 0</div>
         <div id="lives" class="box">❤️ 1</div>
+        <div id="combo" class="box">🔥 x1</div>
+        <div id="level" class="box">NIVEL 1</div>
     </div>
-    <div id="startText">TOCÁ ◀️ ▶️ PARA ESQUIVAR<br>AGARRÁ LAS 💰<br>CHOCÁS = GAME OVER</div>
-    <div id="player">🚗</div>
+    <div id="startText">🏁 TURBO ESCAPE 🏁<br>TOCÁ IZQ/DER PARA MOVERTE<br>AGARRÁ MONEDAS 💰</div>
+    <div id="player">
+        🚗
+        <div id="conductor">😂</div>
+    </div>
     
-    <!-- Banner de anuncio -->
     <div id="bannerAd">
         <ins class="adsbygoogle"
              style="display:inline-block;width:320px;height:50px"
              data-ad-client="ca-pub-TU_ID_ADMOB"
              data-ad-slot="TU_SLOT_BANNER"></ins>
     </div>
-    
-    <div id="controls">
-        <button class="ctrlBtn" onclick="mover(-1)">◀️</button>
-        <button class="ctrlBtn" onclick="mover(1)">▶️</button>
-    </div>
 </div>
 
 <div id="gameOver">
     <div id="box">
-        <h2 style="margin:0 0 10px 0">💥 CHOCASTE 💥</h2>
-        <p style="font-size:20px;margin:10px 0">Recorriste: <b id="kmFinal">0</b> KM</p>
-        <p style="font-size:18px;margin:10px 0">Monedas: <b id="monedasFinal">0</b> 💰</p>
+        <h2 style="margin:0 0 15px 0;font-size:28px">💥 CHOQUE 💥</h2>
+        <p style="font-size:22px;margin:12px 0">Distancia: <b id="kmFinal">0</b> KM</p>
+        <p style="font-size:20px;margin:12px 0">Monedas: <b id="monedasFinal">0</b> 💰</p>
+        <p style="font-size:18px;margin:12px 0;color:#9c27b0">Nivel alcanzado: <b id="nivelFinal">1</b></p>
         <button class="btn btnAd" onclick="verAnuncioRevive()">
             📺 VER ANUNCIO PARA CONTINUAR
         </button>
-        <p style="font-size:12px;color:#666;margin:5px 0">Mirá 30 segundos y seguís jugando</p>
-        <button class="btn" onclick="reiniciar()">EMPEZAR DE NUEVO</button>
+        <p style="font-size:12px;color:#666;margin:8px 0">Mirá 30 segundos y seguís con escudo</p>
+        <button class="btn" onclick="reiniciar()">🔄 EMPEZAR DE NUEVO</button>
         <button class="btn btnMp" onclick="donar()">☕ INVITAME UN CAFÉ $500</button>
     </div>
 </div>
 
 <script>
-// PEGÁ TU LINK DE MP ACÁ PARA EL CAFÉ
 const LINK_CAFECITO = "https://mpago.la/TU_LINK_ACA";
 
-let jugando=false, km=0, monedas=0, vidas=1;
-let carril=1;
-let enemigos=[], monedasMapa=[];
-let velocidad=6;
+let jugando=false, km=0, monedas=0, vidas=1, nivel=1;
+let carril=1, combo=1, comboTimer=0;
+let enemigos=[], monedasMapa=[], powerups=[];
+let velocidad=7, escudo=false;
 let player=document.getElementById('player');
+let conductor=document.getElementById('conductor');
 let game=document.getElementById('game');
 let ultimosSpawn=0;
+let riendose=false;
 
 if(localStorage.monedas) monedas=parseInt(localStorage.monedas);
 document.getElementById('coins').innerHTML='💰 '+monedas;
 
-// Cargar anuncios
 (adsbygoogle = window.adsbygoogle || []).push({});
 
-function mover(dir){
+// CONTROL TÁCTIL - TOCÁS IZQUIERDA O DERECHA
+game.addEventListener('touchstart', (e) => {
     if(!jugando){ empezar(); return; }
-    carril = Math.max(0, Math.min(2, carril + dir));
-    let pos = [16.66, 50, 83.33][carril];
-    player.style.left = pos + '%';
+    let x = e.touches[0].clientX;
+    let mitad = window.innerWidth / 2;
+    if(x < mitad){
+        mover(-1); // Izquierda
+    } else {
+        mover(1); // Derecha
+    }
+});
+
+// También funciona con click en PC
+game.addEventListener('click', (e) => {
+    if(!jugando){ empezar(); return; }
+    let x = e.clientX;
+    let mitad = window.innerWidth / 2;
+    if(x < mitad){
+        mover(-1);
+    } else {
+        mover(1);
+    }
+});
+
+function mover(dir){
+    let nuevoCarril = Math.max(0, Math.min(2, carril + dir));
+    if(nuevoCarril !== carril){
+        carril = nuevoCarril;
+        let pos = [12.5, 50, 87.5][carril];
+        player.style.left = pos + '%';
+        
+        // CONDUCTOR SALE POR LA VENTANA Y SE RÍE
+        if(!riendose){
+            riendose = true;
+            conductor.style.display = 'block';
+            
+            // Crear texto de risa
+            let risa = document.createElement('div');
+            risa.className = 'risa';
+            risa.innerHTML = 'JA JA! 😂';
+            player.appendChild(risa);
+            setTimeout(()=>risa.remove(), 600);
+            
+            setTimeout(()=>{
+                conductor.style.display = 'none';
+                riendose = false;
+            }, 400);
+        }
+    }
 }
 
 function crearEnemigo(){
-    const tipos = ['🚓','🚕','🚙','🚑'];
+    const tipos = ['🚓','🚕','🚙','🚑','🚒','🏍️'];
     const enemigo = document.createElement('div');
     enemigo.className = 'car';
     enemigo.innerHTML = tipos[Math.floor(Math.random()*tipos.length)];
     let carrilEnemigo = Math.floor(Math.random()*3);
-    enemigo.style.left = [16.66, 50, 83.33][carrilEnemigo] + '%';
+    enemigo.style.left = [12.5, 50, 87.5][carrilEnemigo] + '%';
     enemigo.style.top = '-80px';
     enemigo.dataset.carril = carrilEnemigo;
     game.appendChild(enemigo);
@@ -123,22 +176,47 @@ function crearMoneda(){
     moneda.className = 'coin';
     moneda.innerHTML = '💰';
     let carrilMoneda = Math.floor(Math.random()*3);
-    moneda.style.left = [16.66, 50, 83.33][carrilMoneda] + '%';
+    moneda.style.left = [12.5, 50, 87.5][carrilMoneda] + '%';
     moneda.style.top = '-60px';
     moneda.dataset.carril = carrilMoneda;
     game.appendChild(moneda);
     monedasMapa.push({el:moneda, y:-60, carril:carrilMoneda});
 }
 
+function crearPowerUp(){
+    const tipos = ['🛡️','⚡','💎'];
+    const power = document.createElement('div');
+    power.className = 'powerup';
+    power.innerHTML = tipos[Math.floor(Math.random()*tipos.length)];
+    let carrilPower = Math.floor(Math.random()*3);
+    power.style.left = [12.5, 50, 87.5][carrilPower] + '%';
+    power.style.top = '-60px';
+    power.dataset.carril = carrilPower;
+    power.dataset.tipo = power.innerHTML;
+    game.appendChild(power);
+    powerups.push({el:power, y:-60, carril:carrilPower, tipo:power.innerHTML});
+}
+
 function loop(){
     if(!jugando) return;
     km++;
+    nivel = Math.floor(km/500) + 1;
     document.getElementById('score').innerHTML='KM: '+Math.floor(km/10);
+    document.getElementById('level').innerHTML='NIVEL '+nivel;
+    
+    if(combo > 1){
+        document.getElementById('combo').style.display='block';
+        document.getElementById('combo').innerHTML='🔥 x'+combo;
+        comboTimer--;
+        if(comboTimer <= 0) combo = 1;
+    } else {
+        document.getElementById('combo').style.display='none';
+    }
     
     enemigos.forEach((e,i)=>{
-        e.y += velocidad;
+        e.y += velocidad + nivel*0.5;
         e.el.style.top = e.y + 'px';
-        if(e.y > window.innerHeight-180 && e.y < window.innerHeight-80 && e.carril === carril){
+        if(e.y > window.innerHeight-200 && e.y < window.innerHeight-100 && e.carril === carril && !escudo){
             chocar(e);
         }
         if(e.y > window.innerHeight){
@@ -148,10 +226,12 @@ function loop(){
     });
     
     monedasMapa.forEach((m,i)=>{
-        m.y += velocidad;
+        m.y += velocidad + nivel*0.5;
         m.el.style.top = m.y + 'px';
-        if(m.y > window.innerHeight-180 && m.y < window.innerHeight-80 && m.carril === carril){
-            monedas++;
+        if(m.y > window.innerHeight-200 && m.y < window.innerHeight-100 && m.carril === carril){
+            monedas += combo;
+            combo = Math.min(combo+1, 10);
+            comboTimer = 100;
             document.getElementById('coins').innerHTML='💰 '+monedas;
             localStorage.monedas=monedas;
             m.el.remove();
@@ -163,19 +243,54 @@ function loop(){
         }
     });
     
-    // MENOS POLIS - antes 0.6, ahora 0.3
+    powerups.forEach((p,i)=>{
+        p.y += velocidad + nivel*0.5;
+        p.el.style.top = p.y + 'px';
+        if(p.y > window.innerHeight-200 && p.y < window.innerHeight-100 && p.carril === carril){
+            activarPowerUp(p.tipo);
+            p.el.remove();
+            powerups.splice(i,1);
+        }
+        if(p.y > window.innerHeight){
+            p.el.remove();
+            powerups.splice(i,1);
+        }
+    });
+    
     ultimosSpawn++;
-    if(ultimosSpawn > 35){
-        if(Math.random() < 0.3) crearEnemigo(); // 50% menos polis
-        if(Math.random() < 0.5) crearMoneda(); // Más monedas
+    if(ultimosSpawn > 35 - nivel*2){
+        if(Math.random() < 0.25) crearEnemigo(); // Menos polis
+        if(Math.random() < 0.6) crearMoneda();
+        if(Math.random() < 0.04) crearPowerUp();
         ultimosSpawn = 0;
     }
     
-    velocidad += 0.0005;
+    velocidad += 0.0003;
     requestAnimationFrame(loop);
 }
 
+function activarPowerUp(tipo){
+    if(tipo === '🛡️'){
+        escudo = true;
+        player.innerHTML = '🚗<div class="shield"></div><div id="conductor">😂</div>';
+        conductor=document.getElementById('conductor');
+        setTimeout(()=>{
+            escudo = false;
+            player.innerHTML = '🚗<div id="conductor">😂</div>';
+            conductor=document.getElementById('conductor');
+        }, 3000);
+    } else if(tipo === '⚡'){
+        velocidad += 3;
+        setTimeout(()=>velocidad -= 3, 2000);
+    } else if(tipo === '💎'){
+        monedas += 10;
+        document.getElementById('coins').innerHTML='💰 '+monedas;
+        localStorage.monedas=monedas;
+    }
+}
+
 function chocar(enemigo){
+    if(escudo) return;
     jugando=false;
     vidas--;
     document.getElementById('lives').innerHTML='❤️ '+vidas;
@@ -184,9 +299,9 @@ function chocar(enemigo){
     exp.className='explosion';
     exp.innerHTML='💥';
     exp.style.left=enemigo.el.style.left;
-    exp.style.bottom='100px';
+    exp.style.bottom='120px';
     game.appendChild(exp);
-    setTimeout(()=>exp.remove(),500);
+    setTimeout(()=>exp.remove(),600);
     
     enemigo.el.remove();
     enemigos = enemigos.filter(e=>e!==enemigo);
@@ -203,28 +318,30 @@ function chocar(enemigo){
 
 function empezar(){
     jugando=true;
-    km=0; vidas=1; carril=1; velocidad=6;
+    km=0; vidas=1; carril=1; velocidad=7; combo=1; nivel=1;
     enemigos.forEach(e=>e.el.remove());
     monedasMapa.forEach(m=>m.el.remove());
-    enemigos=[]; monedasMapa=[];
+    powerups.forEach(p=>p.el.remove());
+    enemigos=[]; monedasMapa=[]; powerups=[];
     document.getElementById('startText').style.display='none';
     document.getElementById('gameOver').style.display='none';
     document.getElementById('lives').innerHTML='❤️ 1';
     player.style.left='50%';
+    player.innerHTML='🚗<div id="conductor">😂</div>';
+    conductor=document.getElementById('conductor');
+    escudo=false;
     loop();
 }
 
 function gameOver(){
     document.getElementById('kmFinal').innerText=Math.floor(km/10);
     document.getElementById('monedasFinal').innerText=monedas;
+    document.getElementById('nivelFinal').innerText=nivel;
     document.getElementById('gameOver').style.display='flex';
     mostrarAnuncioIntersticial();
 }
 
 function verAnuncioRevive(){
-    // El jugador ve anuncio para revivir
-    // NO SE MENCIONA QUE LA PLATA ES TUYA
-    
     if(typeof Android !== 'undefined' && Android.mostrarReward){
         Android.mostrarReward();
     } else {
@@ -233,12 +350,19 @@ function verAnuncioRevive(){
     }
 }
 
-// Android llama esta función cuando el anuncio se vio COMPLETO
 function pagoExitosoReward(){
     vidas=1;
     jugando=true;
+    escudo=true;
+    player.innerHTML = '🚗<div class="shield"></div><div id="conductor">😂</div>';
+    conductor=document.getElementById('conductor');
     document.getElementById('gameOver').style.display='none';
     document.getElementById('lives').innerHTML='❤️ 1';
+    setTimeout(()=>{
+        escudo=false;
+        player.innerHTML='🚗<div id="conductor">😂</div>';
+        conductor=document.getElementById('conductor');
+    }, 3000);
     loop();
 }
 
