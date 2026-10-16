@@ -3,43 +3,63 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Corre o Choca</title>
+<title>Corre y Junta Guita</title>
+
+<!-- Google AdMob - PONÉ TU ID ACÁ CUANDO LO TENGAS -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-TU_ID_ADMOB"
+     crossorigin="anonymous"></script>
+
 <style>
-html,body{margin:0;padding:0;overflow:hidden;background:#333;font-family:Arial}
-#game{width:100%;height:100vh;position:relative;background:#555}
-#road{position:absolute;width:300px;height:100%;left:50%;transform:translateX(-50%);background:#444;overflow:hidden}
-.lane{position:absolute;width:2px;height:100%;background:yellow;opacity:0.5}
-#player{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);font-size:50px;z-index:10;transition:left 0.1s}
-.police{position:absolute;font-size:50px;z-index:9}
+html,body{margin:0;padding:0;overflow:hidden;background:#222;font-family:Arial;user-select:none}
+#game{width:100%;height:100vh;position:relative;background:#333;perspective:600px}
+#road{position:absolute;width:100%;height:200%;left:0;top:-100%;background:repeating-linear-gradient(0deg,#444 0px,#444 40px,#555 40px,#555 80px);animation:scroll 0.5s linear infinite}
+@keyframes scroll{0%{transform:translateY(0)}100%{transform:translateY(80px)}}
+.lane{position:absolute;width:4px;height:100%;background:yellow;opacity:0.6;left:50%;transform:translateX(-50%)}
+#player{position:absolute;bottom:100px;left:50%;transform:translateX(-50%);font-size:55px;z-index:10;transition:left 0.15s}
+.car{position:absolute;font-size:55px;z-index:9}
+.coin{position:absolute;font-size:40px;z-index:8;animation:spin 1s linear infinite}
+@keyframes spin{0%{transform:rotateY(0deg)}100%{transform:rotateY(360deg)}}
 #hud{position:absolute;top:15px;left:15px;right:15px;z-index:20}
-.box{background:#fff;padding:10px 20px;border-radius:25px;font-weight:900;font-size:18px;box-shadow:0 3px 6px rgba(0,0,0,0.3)}
+.box{background:rgba(255,255,255,0.95);padding:10px 20px;border-radius:25px;font-weight:900;font-size:18px;box-shadow:0 3px 6px rgba(0,0,0,0.5)}
 #score{float:left}
-#lives{float:right;background:#f44336;color:#fff}
+#coins{float:right;background:gold}
+#lives{position:absolute;top:60px;left:15px;background:#f44336;color:#fff}
 #controls{position:fixed;bottom:20px;left:0;right:0;display:flex;justify-content:center;gap:40px;z-index:20}
 .ctrlBtn{background:rgba(255,255,255,0.3);color:#fff;border:3px solid #fff;width:80px;height:80px;border-radius:50%;font-size:40px;font-weight:900}
 .ctrlBtn:active{background:rgba(255,255,255,0.6)}
-#gameOver{position:fixed;inset:0;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:100}
-#box{background:#fff;padding:30px;border-radius:15px;text-align:center;max-width:320px}
+#gameOver{position:fixed;inset:0;background:rgba(0,0,0,0.95);display:none;align-items:center;justify-content:center;z-index:100}
+#box{background:#fff;padding:30px;border-radius:15px;text-align:center;max-width:340px}
 .btn{background:#4CAF50;color:#fff;border:0;padding:18px 30px;margin:10px 0;border-radius:10px;font-size:18px;font-weight:900;width:100%}
-.btnRevive{background:#FF9800;font-size:20px}
+.btnAd{background:#FF9800;font-size:20px;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
 .btnMp{background:#009EE3}
-#startText{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);font-size:24px;font-weight:900;color:#fff;text-shadow:2px 2px 4px #000;z-index:10;text-align:center}
-.explosion{position:absolute;font-size:60px;animation:boom 0.5s}
-@keyframes boom{0%{transform:scale(0)}50%{transform:scale(1.5)}100%{transform:scale(1);opacity:0}}
+#startText{position:absolute;top:35%;left:50%;transform:translate(-50%,-50%);font-size:22px;font-weight:900;color:#fff;text-shadow:2px 2px 4px #000;z-index:10;text-align:center}
+.explosion{position:absolute;font-size:70px;animation:boom 0.5s;z-index:15}
+@keyframes boom{0%{transform:scale(0)}50%{transform:scale(1.8)}100%{transform:scale(1);opacity:0}}
+#bannerAd{position:fixed;bottom:115px;left:0;right:0;z-index:15;text-align:center}
 </style>
 </head>
 <body>
 <div id="game">
     <div id="road">
-        <div class="lane" style="left:33%"></div>
-        <div class="lane" style="left:66%"></div>
+        <div class="lane" style="left:33.33%"></div>
+        <div class="lane" style="left:66.66%"></div>
     </div>
     <div id="hud">
         <div id="score" class="box">KM: 0</div>
-        <div id="lives" class="box">❤️ 3</div>
+        <div id="coins" class="box">💰 0</div>
+        <div id="lives" class="box">❤️ 1</div>
     </div>
-    <div id="startText">TOCÁ ◀️ ▶️ PARA ESQUIVAR<br>SI TE CHOCAN = GAME OVER</div>
+    <div id="startText">TOCÁ ◀️ ▶️ PARA ESQUIVAR<br>AGARRÁ LAS 💰<br>CHOCÁS = MIRÁS ANUNCIO</div>
     <div id="player">🚗</div>
+    
+    <!-- BANNER QUE TE PAGA 24/7 -->
+    <div id="bannerAd">
+        <ins class="adsbygoogle"
+             style="display:inline-block;width:320px;height:50px"
+             data-ad-client="ca-pub-TU_ID_ADMOB"
+             data-ad-slot="TU_SLOT_BANNER"></ins>
+    </div>
     
     <div id="controls">
         <button class="ctrlBtn" onclick="mover(-1)">◀️</button>
@@ -49,46 +69,68 @@ html,body{margin:0;padding:0;overflow:hidden;background:#333;font-family:Arial}
 
 <div id="gameOver">
     <div id="box">
-        <h2 style="margin:0 0 10px 0">💥 CHOQUE TOTAL 💥</h2>
+        <h2 style="margin:0 0 10px 0">💥 CHOCASTE 💥</h2>
         <p style="font-size:20px;margin:10px 0">Recorriste: <b id="kmFinal">0</b> KM</p>
-        <button class="btn btnRevive" onclick="revivir()">🔄 REVIVIR - $300</button>
-        <p style="font-size:12px;color:#666;margin:5px 0">La plata va directo al creador</p>
+        <p style="font-size:18px;margin:10px 0">Monedas: <b id="monedasFinal">0</b> 💰</p>
+        <button class="btn btnAd" onclick="verAnuncioRevive()">
+            📺 VER ANUNCIO PARA REVIVIR<br>
+            <span style="font-size:13px">30 seg - Gratis para vos</span>
+        </button>
+        <p style="font-size:11px;color:#666;margin:5px 0">Si ves el anuncio completo, yo cobro y vos revivís</p>
         <button class="btn" onclick="reiniciar()">JUGAR DE NUEVO GRATIS</button>
         <button class="btn btnMp" onclick="donar()">☕ INVITAME UN CAFÉ $500</button>
     </div>
 </div>
 
 <script>
-// PEGÁ TU LINK DE MP ACÁ PARA EL BOTÓN DE CAFÉ
+// PEGÁ TU LINK DE MP ACÁ PARA EL CAFÉ
 const LINK_CAFECITO = "https://mpago.la/TU_LINK_ACA";
 
-// ID DEL PRODUCTO EN GOOGLE PLAY - LO CREAMOS DESPUÉS
-const PRODUCTO_REVIVIR = "revivir_300";
-
-let jugando=false, km=0, vidas=3;
+let jugando=false, km=0, monedas=0, vidas=1;
 let carril=1; // 0=izq, 1=medio, 2=der
-let polis=[];
-let velocidad=5;
+let enemigos=[], monedasMapa=[];
+let velocidad=6;
 let player=document.getElementById('player');
 let game=document.getElementById('game');
+let ultimosSpawn=0;
+
+// Cargar monedas guardadas
+if(localStorage.monedas) monedas=parseInt(localStorage.monedas);
+document.getElementById('coins').innerHTML='💰 '+monedas;
+
+// Cargar anuncios
+(adsbygoogle = window.adsbygoogle || []).push({});
 
 function mover(dir){
     if(!jugando){ empezar(); return; }
     carril = Math.max(0, Math.min(2, carril + dir));
-    let pos = [25, 50, 75][carril];
+    let pos = [16.66, 50, 83.33][carril];
     player.style.left = pos + '%';
 }
 
-function crearPoli(){
-    const poli = document.createElement('div');
-    poli.className = 'police';
-    poli.innerHTML = '🚓';
-    let carrilPoli = Math.floor(Math.random()*3);
-    poli.style.left = [25, 50, 75][carrilPoli] + '%';
-    poli.style.top = '-60px';
-    poli.dataset.carril = carrilPoli;
-    game.appendChild(poli);
-    polis.push({el:poli, y:-60, carril:carrilPoli});
+function crearEnemigo(){
+    const tipos = ['🚓','🚕','🚙','🚑','🚐'];
+    const enemigo = document.createElement('div');
+    enemigo.className = 'car';
+    enemigo.innerHTML = tipos[Math.floor(Math.random()*tipos.length)];
+    let carrilEnemigo = Math.floor(Math.random()*3);
+    enemigo.style.left = [16.66, 50, 83.33][carrilEnemigo] + '%';
+    enemigo.style.top = '-80px';
+    enemigo.dataset.carril = carrilEnemigo;
+    game.appendChild(enemigo);
+    enemigos.push({el:enemigo, y:-80, carril:carrilEnemigo});
+}
+
+function crearMoneda(){
+    const moneda = document.createElement('div');
+    moneda.className = 'coin';
+    moneda.innerHTML = '💰';
+    let carrilMoneda = Math.floor(Math.random()*3);
+    moneda.style.left = [16.66, 50, 83.33][carrilMoneda] + '%';
+    moneda.style.top = '-60px';
+    moneda.dataset.carril = carrilMoneda;
+    game.appendChild(moneda);
+    monedasMapa.push({el:moneda, y:-60, carril:carrilMoneda});
 }
 
 function loop(){
@@ -96,31 +138,56 @@ function loop(){
     km++;
     document.getElementById('score').innerHTML='KM: '+Math.floor(km/10);
     
-    // Mover polis
-    polis.forEach((p,i)=>{
-        p.y += velocidad;
-        p.el.style.top = p.y + 'px';
+    // Mover enemigos - VIENEN DE FRENTE
+    enemigos.forEach((e,i)=>{
+        e.y += velocidad;
+        e.el.style.top = e.y + 'px';
         
         // Choque
-        if(p.y > window.innerHeight-140 && p.y < window.innerHeight-60 && p.carril === carril){
-            chocar(p);
+        if(e.y > window.innerHeight-180 && e.y < window.innerHeight-80 && e.carril === carril){
+            chocar(e);
         }
         
         // Borrar si se fue
-        if(p.y > window.innerHeight){
-            p.el.remove();
-            polis.splice(i,1);
+        if(e.y > window.innerHeight){
+            e.el.remove();
+            enemigos.splice(i,1);
         }
     });
     
-    // Spawn polis
-    if(Math.random() < 0.03 + km*0.00001) crearPoli();
+    // Mover monedas
+    monedasMapa.forEach((m,i)=>{
+        m.y += velocidad;
+        m.el.style.top = m.y + 'px';
+        
+        // Agarrar moneda
+        if(m.y > window.innerHeight-180 && m.y < window.innerHeight-80 && m.carril === carril){
+            monedas++;
+            document.getElementById('coins').innerHTML='💰 '+monedas;
+            localStorage.monedas=monedas;
+            m.el.remove();
+            monedasMapa.splice(i,1);
+        }
+        
+        if(m.y > window.innerHeight){
+            m.el.remove();
+            monedasMapa.splice(i,1);
+        }
+    });
     
-    velocidad += 0.001;
+    // Spawn enemigos y monedas
+    ultimosSpawn++;
+    if(ultimosSpawn > 30){
+        if(Math.random() < 0.6) crearEnemigo();
+        if(Math.random() < 0.4) crearMoneda();
+        ultimosSpawn = 0;
+    }
+    
+    velocidad += 0.0005;
     requestAnimationFrame(loop);
 }
 
-function chocar(poli){
+function chocar(enemigo){
     jugando=false;
     vidas--;
     document.getElementById('lives').innerHTML='❤️ '+vidas;
@@ -129,13 +196,13 @@ function chocar(poli){
     const exp = document.createElement('div');
     exp.className='explosion';
     exp.innerHTML='💥';
-    exp.style.left=poli.el.style.left;
-    exp.style.bottom='80px';
+    exp.style.left=enemigo.el.style.left;
+    exp.style.bottom='100px';
     game.appendChild(exp);
     setTimeout(()=>exp.remove(),500);
     
-    poli.el.remove();
-    polis = polis.filter(p=>p!==poli);
+    enemigo.el.remove();
+    enemigos = enemigos.filter(e=>e!==enemigo);
     
     if(vidas <= 0){
         gameOver();
@@ -149,48 +216,54 @@ function chocar(poli){
 
 function empezar(){
     jugando=true;
-    km=0; vidas=3; carril=1; velocidad=5;
-    polis.forEach(p=>p.el.remove());
-    polis=[];
+    km=0; vidas=1; carril=1; velocidad=6;
+    enemigos.forEach(e=>e.el.remove());
+    monedasMapa.forEach(m=>m.el.remove());
+    enemigos=[]; monedasMapa=[];
     document.getElementById('startText').style.display='none';
     document.getElementById('gameOver').style.display='none';
-    document.getElementById('lives').innerHTML='❤️ 3';
+    document.getElementById('lives').innerHTML='❤️ 1';
     player.style.left='50%';
     loop();
 }
 
 function gameOver(){
     document.getElementById('kmFinal').innerText=Math.floor(km/10);
+    document.getElementById('monedasFinal').innerText=monedas;
     document.getElementById('gameOver').style.display='flex';
+    
+    // Mostrar anuncio intersticial = PLATA PARA VOS
+    mostrarAnuncioIntersticial();
 }
 
-function revivir(){
-    // ACÁ SE CONECTA CON GOOGLE PLAY BILLING
-    // Cuando lo compiles a APK con Capacitor, esto abre el pago de $300
+function verAnuncioRevive(){
+    // ANUNCIO REWARD QUE TE PAGA
+    // En Android con AdMob, esto muestra video de 30s
+    // Si lo ve completo: revivís Y VOS COBRÁS $0.01-$0.05 USD
     
-    if(typeof Android !== 'undefined'){
-        // Si está en Android, llama al pago
-        Android.comprarProducto(PRODUCTO_REVIVIR);
+    if(typeof Android !== 'undefined' && Android.mostrarReward){
+        Android.mostrarReward(); // Llama al código nativo Android
     } else {
-        // Si está en web, simulamos o mandamos a MP
-        alert('En Android se abre Google Play para pagar $300 y revivir.\n\nPor ahora en web: pagá por Mercado Pago');
-        window.open(LINK_CAFECITO,'_blank');
-        // Damos el revive gratis en web para testear
-        vidas=3;
-        jugando=true;
-        document.getElementById('gameOver').style.display='none';
-        document.getElementById('lives').innerHTML='❤️ 3';
-        loop();
+        // En web o test: simulamos
+        let confirmar = confirm('En la app Android acá se ve un video de 30 segundos.\n\nSi lo ves completo:\n✅ Revivís con 1 vida\n✅ El creador cobra $0.01-$0.05 USD\n\n¿Simular que lo viste?');
+        if(confirmar) pagoExitosoReward();
     }
 }
 
-// Esta función la llama Android cuando el pago sale bien
-function pagoExitoso(){
-    vidas=3;
+// Android llama esta función cuando el anuncio se vio COMPLETO
+function pagoExitosoReward(){
+    vidas=1;
     jugando=true;
     document.getElementById('gameOver').style.display='none';
-    document.getElementById('lives').innerHTML='❤️ 3';
+    document.getElementById('lives').innerHTML='❤️ 1';
     loop();
+}
+
+function mostrarAnuncioIntersticial(){
+    // Anuncio pantalla completa cada muerte = MÁS PLATA PARA VOS
+    if(typeof Android !== 'undefined' && Android.mostrarIntersticial){
+        Android.mostrarIntersticial();
+    }
 }
 
 function reiniciar(){
