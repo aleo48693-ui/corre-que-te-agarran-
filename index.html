@@ -4,10 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Turbo Escape PRO</title>
-
 <style>
-html,body{margin:0;padding:0;overflow:hidden;background:#0a0a0a;font-family:'Arial Black',Arial;user-select:none;-webkit-user-select:none}
-#game{width:100%;height:100vh;position:relative;background:linear-gradient(180deg,#0f0c29 0%,#302b63 50%,#24243e 100%);touch-action:none}
+html,body{margin:0;padding:0;overflow:hidden;background:#0a;font-family:'Arial Black',Arial;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+#game{width:100%;height:100vh;position:relative;background:linear-gradient(180deg,#0f0c29 0%,#302b63 50%,#24243e 100%);touch-action:manipulation}
 #road{position:absolute;width:100%;height:200%;left:0;top:-100%;background:repeating-linear-gradient(0deg,#1a1a1a 0px,#1a1a1a 60px,#222 60px,#222 120px);animation:scroll 0.3s linear infinite}
 @keyframes scroll{0%{transform:translateY(0)}100%{transform:translateY(120px)}}
 .lane{position:absolute;width:8px;height:100%;background:repeating-linear-gradient(0deg,#ffeb3b 0px,#ffeb3b 40px,transparent 40px,transparent 80px);opacity:0.9;filter:drop-shadow(0 0 10px #ffeb3b)}
@@ -24,40 +23,39 @@ html,body{margin:0;padding:0;overflow:hidden;background:#0a0a0a;font-family:'Ari
 @keyframes glow{0%,100%{filter:drop-shadow(0 0 8px gold)}50%{filter:drop-shadow(0 0 20px gold)}}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 @keyframes bounce{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-15px) scale(1.1)}}
-#hud{position:absolute;top:15px;left:15px;right:15px;z-index:20}
-.box{background:linear-gradient(135deg,rgba(20,20,20,0.95),rgba(40,40,0.95));padding:10px 18px;border-radius:30px;font-weight:900;font-size:15px;box-shadow:0 4px 20px rgba(0,0,0,0.6);border:2px solid rgba(255,255,255,0.2);color:#fff}
+#hud{position:absolute;top:15px;left:15px;right:15px;z-index:20;pointer-events:none}
+.box{background:linear-gradient(135deg,rgba(20,20,20,0.95),rgba(40,40,0.95));padding:8px 15px;border-radius:30px;font-weight:900;font-size:13px;box-shadow:0 4px 20px rgba(0,0,0,0.6);border:2px solid rgba(255,255,255,0.2);color:#fff}
 #score{float:left;border-color:#00bcd4}
 #coins{float:right;background:linear-gradient(135deg,#ffd700,#ff9800);color:#000;border-color:gold}
-#lives{position:absolute;top:55px;left:15px;background:linear-gradient(135deg,#f44336,#d32f2f);border-color:#ff5555}
-#combo{position:absolute;top:55px;right:15px;background:linear-gradient(135deg,#9c27b0,#7b1fa2);border-color:#ff00ff;display:none}
-#level{position:absolute;top:95px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#00bcd4,#0097a7);border-color:#00ffff;font-size:14px}
-#mision{position:absolute;top:135px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#4caf50,#388e3c);border-color:#00ff00;font-size:13px;max-width:80%}
-#menuBtn{position:absolute;top:15px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#ff9800,#f57c00);border-color:orange;padding:10px 25px;font-size:16px;cursor:pointer}
+#lives{position:absolute;top:50px;left:15px;background:linear-gradient(135deg,#f44336,#d32f2f);border-color:#ff5555}
+#combo{position:absolute;top:50px;right:15px;background:linear-gradient(135deg,#9c27b0,#7b1fa2);border-color:#ff00ff;display:none}
+#level{position:absolute;top:90px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#00bcd4,#0097a7);border-color:#00ffff;font-size:12px}
+#mision{position:absolute;top:130px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#4caf50,#388e3c);border-color:#00ff00;font-size:11px;max-width:80%}
+#menuBtn{position:absolute;top:15px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#ff9800,#f57c00);border-color:orange;padding:10px 25px;font-size:16px;cursor:pointer;pointer-events:all;z-index:21}
 #menu{position:fixed;inset:0;background:rgba(0,0,0,0.98);display:none;align-items:center;justify-content:center;z-index:200;overflow-y:auto}
 #menuBox{background:linear-gradient(135deg,#1a1a2e,#16213e);padding:30px;border-radius:20px;text-align:center;max-width:90%;width:400px;border:3px solid #00bcd4;box-shadow:0 0 40px rgba(0,188,212,0.5);max-height:90vh;overflow-y:auto}
 .skinBtn{background:linear-gradient(135deg,#333,#555);border:2px solid #666;color:#fff;padding:15px;margin:8px;border-radius:10px;font-size:40px;cursor:pointer;display:inline-block;transition:all 0.2s}
 .skinBtn.selected{border-color:#00ff00;box-shadow:0 0 20px #00ff00;transform:scale(1.1)}
 .skinBtn.locked{opacity:0.3;cursor:not-allowed}
-.skinBtn:hover:not(.locked){transform:scale(1.05)}
 .btn{background:linear-gradient(135deg,#4CAF50,#45a049);color:#fff;border:0;padding:20px 35px;margin:12px 0;border-radius:12px;font-size:19px;font-weight:900;width:100%;box-shadow:0 4px 15px rgba(76,175,80,0.4);cursor:pointer}
 .btnAd{background:linear-gradient(135deg,#2196F3,#1976D2);font-size:18px;animation:pulse 1.5s infinite;box-shadow:0 4px 15px rgba(33,150,243,0.5)}
 .btnGold{background:linear-gradient(135deg,#ffd700,#ff9800);color:#000;font-size:18px;box-shadow:0 4px 15px rgba(255,215,0,0.5)}
 .btnVip{background:linear-gradient(135deg,#9c27b0,#7b1fa2);font-size:18px;box-shadow:0 4px 15px rgba(156,39,176,0.5)}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
 .btnMp{background:linear-gradient(135deg,#009EE3,#0084c7)}
-#startText{position:absolute;top:28%;left:50%;transform:translate(-50%,-50%);font-size:28px;font-weight:900;color:#fff;text-shadow:0 0 25px #00bcd4,3px 3px 6px #000;z-index:10;text-align:center;line-height:1.6}
+#startText{position:absolute;top:28%;left:50%;transform:translate(-50%,-50%);font-size:28px;font-weight:900;color:#fff;text-shadow:0 0 25px #00bcd4,3px 3px 6px #000;z-index:10;text-align:center;line-height:1.6;pointer-events:none}
 .explosion{position:absolute;font-size:90px;animation:boom 0.6s;z-index:15}
 @keyframes boom{0%{transform:scale(0) rotate(0deg)}50%{transform:scale(2.2) rotate(180deg)}100%{transform:scale(1) rotate(360deg);opacity:0}}
 .shield{position:absolute;width:90px;height:90px;border:4px solid #00bcd4;border-radius:50%;animation:shield 0.5s infinite;pointer-events:none;box-shadow:0 0 20px #00bcd4}
 @keyframes shield{0%,100%{opacity:0.4;transform:scale(1)}50%{opacity:0.9;transform:scale(1.15)}}
 .risa{position:absolute;top:-45px;left:50%;transform:translateX(-50%);font-size:28px;font-weight:900;color:#ffeb3b;text-shadow:0 0 10px #ff9800,2px 2px 4px #000;animation:subir 0.6s;pointer-events:none}
 @keyframes subir{0%{opacity:1;transform:translateX(-50%) translateY(0)}100%{opacity:0;transform:translateX(-50%) translateY(-50px)}}
-#racha{position:absolute;top:175px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#ff6b,#ee5a6f);border-color:#ff0000;font-size:13px}
+#racha{position:absolute;top:170px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#ff6b6b,#ee5a6f);border-color:#ff0000;font-size:11px}
 .notif{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#4caf50,#388e3c);color:#fff;padding:25px 40px;border-radius:15px;font-size:24px;font-weight:900;z-index:300;display:none;animation:popIn 0.5s;box-shadow:0 0 30px rgba(76,175,80,0.8)}
 @keyframes popIn{0%{transform:translate(-50%,-50%) scale(0)}50%{transform:translate(-50%,-50%) scale(1.2)}100%{transform:translate(-50%,-50%) scale(1)}}
 #gameOver{position:fixed;inset:0;background:rgba(0,0,0,0.97);display:none;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(5px)}
 #box{background:linear-gradient(135deg,#fff,#f5f5f5);padding:35px;border-radius:20px;text-align:center;max-width:360px;box-shadow:0 10px 40px rgba(0,0,0,0.5)}
-.x2timer{position:fixed;top:215px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#ff9800,#f57c00);color:#000;padding:8px 20px;border-radius:20px;font-weight:900;font-size:14px;display:none;z-index:25}
+.x2timer{position:fixed;top:210px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#ff9800,#f57c00);color:#000;padding:8px 20px;border-radius:20px;font-weight:900;font-size:14px;display:none;z-index:25}
 </style>
 </head>
 <body>
@@ -109,7 +107,7 @@ html,body{margin:0;padding:0;overflow:hidden;background:#0a0a0a;font-family:'Ari
         </button>
         
         <p style="color:#ffd700;font-size:16px;margin:20px 0">Tu mejor: <span id="mejorScore">0</span> KM</p>
-        <button class="btn" onclick="calificar()">⭐⭐⭐⭐⭐ CALIFICANOS</button>
+        <button class="btn" onclick="calificar()">⭐⭐⭐ CALIFICANOS</button>
         <button class="btn" onclick="cerrarMenu()">VOLVER AL JUEGO</button>
     </div>
 </div>
@@ -175,17 +173,15 @@ if(ultimoDia !== hoy){
 }
 document.getElementById('racha').innerHTML='🔥 Racha: '+rachaDias+' día'+(rachaDias>1?'s':'');
 
-game.addEventListener('touchstart', (e) => {
+// FIX PARA IPHONE: usar touchend en vez de click
+document.getElementById('game').addEventListener('touchstart', (e) => {
+    e.preventDefault();
+}, {passive: false});
+
+document.getElementById('game').addEventListener('touchend', (e) => {
     e.preventDefault();
     if(!jugando){ empezar(); return; }
-    let x = e.touches[0].clientX;
-    let mitad = window.innerWidth / 2;
-    if(x < mitad){ mover(-1); } else { mover(1); }
-});
-
-game.addEventListener('click', (e) => {
-    if(!jugando){ empezar(); return; }
-    let x = e.clientX;
+    let x = e.changedTouches[0].clientX;
     let mitad = window.innerWidth / 2;
     if(x < mitad){ mover(-1); } else { mover(1); }
 });
@@ -435,7 +431,6 @@ function chocar(enemigo){
     enemigo.el.remove();
     enemigos = enemigos.filter(e=>e!==enemigo);
     
-    // INTERSTICIAL CADA 3 MUERTES - MÁS PLATA Y NO JODE
     if(muertesSeguidas >= 3 && !esVIP){
         mostrarIntersticial();
         muertesSeguidas = 0;
@@ -503,7 +498,6 @@ function gameOver(){
     
     document.getElementById('gameOver').style.display='flex';
     
-    // PEDIR REVIEW DESPUÉS DE NIVEL 5
     if(nivel >= 5 && Math.random() < 0.3){
         setTimeout(()=>{
             if(confirm('¿Te gusta el juego? ⭐⭐⭐⭐⭐\nCalificanos en Play Store!')){
@@ -518,8 +512,6 @@ function verAnuncioRevive(){
         pagoExitosoReward();
         return;
     }
-    // ACÁ VA ADMOB REAL CUANDO COMPILES
-    // Android.mostrarReward('revive');
     let confirmar = confirm('Mirá 30 seg y seguís con escudo\n\n¿Querés verlo?');
     if(confirmar) pagoExitosoReward();
 }
@@ -530,5 +522,4 @@ function pagoExitosoReward(){
     escudo=true;
     player.innerHTML = skinActual+'<div class="shield"></div><div id="conductor">😂</div>';
     conductor=document.getElementById('conductor');
-    document.getElementById('gameOver').style.display='none';
-    document.getElementById('lives
+    document.getElementById
