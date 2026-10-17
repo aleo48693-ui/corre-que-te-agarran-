@@ -5,21 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Turbo Escape PRO</title>
 
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-TU_ID_ADMOB"
-     crossorigin="anonymous"></script>
+<!-- BORRÁ ESTA LÍNEA SI NO TENÉS ADMOB TODAVÍA -->
+<!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-TU_ID_ADMOB" crossorigin="anonymous"></script> -->
 
 <style>
 html,body{margin:0;padding:0;overflow:hidden;background:#0a0a0a;font-family:'Arial Black',Arial;user-select:none;-webkit-user-select:none}
 #game{width:100%;height:100vh;position:relative;background:linear-gradient(180deg,#0f0c29 0%,#302b63 50%,#24243e 100%);touch-action:none}
-#road{position:absolute;width:100%;height:200%;left:0;top:-100%;background:repeating-linear-gradient(0deg,#1a1a1a 0px,#1a1a1a 60px,#222 60px,#222 120px);animation:scroll 0.25s linear infinite}
+#road{position:absolute;width:100%;height:200%;left:0;top:-100%;background:repeating-linear-gradient(0deg,#1a1a1a 0px,#1a1a1a 60px,#222 60px,#222 120px);animation:scroll 0.3s linear infinite}
 @keyframes scroll{0%{transform:translateY(0)}100%{transform:translateY(120px)}}
 .lane{position:absolute;width:8px;height:100%;background:repeating-linear-gradient(0deg,#ffeb3b 0px,#ffeb3b 40px,transparent 40px,transparent 80px);opacity:0.9;filter:drop-shadow(0 0 10px #ffeb3b)}
-#player{position:absolute;bottom:120px;left:50%;transform:translateX(-50%);font-size:65px;z-index:10;transition:left 0.12s;filter:drop-shadow(0 0 15px #00f)}
-#conductor{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:32px;display:none;animation:asomar 0.3s}
+#player{position:absolute;bottom:120px;left:50%;transform:translateX(-50%);font-size:65px;z-index:10;transition:left 0.15s;filter:drop-shadow(0 0 20px #00f)}
+#conductor{position:absolute;top:-15px;left:50%;transform:translateX(-50%);font-size:32px;display:none;animation:asomar 0.3s}
 @keyframes asomar{0%{transform:translateX(-50%) translateY(25px)}100%{transform:translateX(-50%) translateY(0)}}
-.car{position:absolute;font-size:65px;z-index:9;filter:drop-shadow(0 0 10px rgba(255,0,0,0.6))}
-.boss{position:absolute;font-size:90px;z-index:9;filter:drop-shadow(0 0 20px red);animation:bossGlow 0.5s infinite}
-@keyframes bossGlow{0%,100%{filter:drop-shadow(0 0 20px red)}50%{filter:drop-shadow(0 0 30px orange)}}
+.car{position:absolute;font-size:65px;z-index:9;filter:drop-shadow(0 0 12px rgba(255,0,0,0.7))}
+.boss{position:absolute;font-size:90px;z-index:9;filter:drop-shadow(0 0 25px red);animation:bossGlow 0.5s infinite}
+@keyframes bossGlow{0%,100%{filter:drop-shadow(0 0 25px red)}50%{filter:drop-shadow(0 0 35px orange)}}
 .coin{position:absolute;font-size:48px;z-index:8;animation:spin 0.8s linear infinite,glow 1s ease-in-out infinite}
 .powerup{position:absolute;font-size:48px;z-index:8;animation:float 1s ease-in-out infinite,pulse 0.5s infinite}
 .cofre{position:absolute;font-size:55px;z-index:8;animation:bounce 0.6s infinite}
@@ -35,13 +35,14 @@ html,body{margin:0;padding:0;overflow:hidden;background:#0a0a0a;font-family:'Ari
 #combo{position:absolute;top:65px;right:15px;background:linear-gradient(135deg,#9c27b0,#7b1fa2);border-color:#ff00ff;display:none}
 #level{position:absolute;top:115px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#00bcd4,#0097a7);border-color:#00ffff;font-size:16px}
 #mision{position:absolute;top:165px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#4caf50,#388e3c);border-color:#00ff00;font-size:14px;max-width:80%}
-#menuBtn{position:absolute;top:15px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#ff9800,#f57c00);border-color:orange;padding:10px 25px;font-size:16px}
+#menuBtn{position:absolute;top:15px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#ff9800,#f57c00);border-color:orange;padding:10px 25px;font-size:16px;cursor:pointer}
 #menu{position:fixed;inset:0;background:rgba(0,0,0,0.98);display:none;align-items:center;justify-content:center;z-index:200;overflow-y:auto}
 #menuBox{background:linear-gradient(135deg,#1a1a2e,#16213e);padding:30px;border-radius:20px;text-align:center;max-width:90%;width:400px;border:3px solid #00bcd4;box-shadow:0 0 40px rgba(0,188,212,0.5);max-height:90vh;overflow-y:auto}
-.skinBtn{background:linear-gradient(135deg,#333,#555);border:2px solid #666;color:#fff;padding:15px;margin:8px;border-radius:10px;font-size:40px;cursor:pointer;display:inline-block}
-.skinBtn.selected{border-color:#00ff00;box-shadow:0 0 20px #00ff00}
+.skinBtn{background:linear-gradient(135deg,#333,#555);border:2px solid #666;color:#fff;padding:15px;margin:8px;border-radius:10px;font-size:40px;cursor:pointer;display:inline-block;transition:all 0.2s}
+.skinBtn.selected{border-color:#00ff00;box-shadow:0 0 20px #00ff00;transform:scale(1.1)}
 .skinBtn.locked{opacity:0.3;cursor:not-allowed}
-.btn{background:linear-gradient(135deg,#4CAF50,#45a049);color:#fff;border:0;padding:18px 35px;margin:12px 0;border-radius:12px;font-size:19px;font-weight:900;width:100%;box-shadow:0 4px 15px rgba(76,175,80,0.4);cursor:pointer}
+.skinBtn:hover:not(.locked){transform:scale(1.05)}
+.btn{background:linear-gradient(135deg,#4CAF50,#45a049);color:#fff;border:0;padding:20px 35px;margin:12px 0;border-radius:12px;font-size:19px;font-weight:900;width:100%;box-shadow:0 4px 15px rgba(76,175,80,0.4);cursor:pointer}
 .btnAd{background:linear-gradient(135deg,#2196F3,#1976D2);font-size:21px;animation:pulse 1.5s infinite;box-shadow:0 4px 15px rgba(33,150,243,0.5)}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
 .btnMp{background:linear-gradient(135deg,#009EE3,#0084c7)}
@@ -56,6 +57,8 @@ html,body{margin:0;padding:0;overflow:hidden;background:#0a0a0a;font-family:'Ari
 #racha{position:absolute;top:215px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#ff6b6b,#ee5a6f);border-color:#ff0000;font-size:14px}
 .notif{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#4caf50,#388e3c);color:#fff;padding:25px 40px;border-radius:15px;font-size:24px;font-weight:900;z-index:300;display:none;animation:popIn 0.5s;box-shadow:0 0 30px rgba(76,175,80,0.8)}
 @keyframes popIn{0%{transform:translate(-50%,-50%) scale(0)}50%{transform:translate(-50%,-50%) scale(1.2)}100%{transform:translate(-50%,-50%) scale(1)}}
+#gameOver{position:fixed;inset:0;background:rgba(0,0,0,0.97);display:none;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(5px)}
+#box{background:linear-gradient(135deg,#fff,#f5f5);padding:35px;border-radius:20px;text-align:center;max-width:360px;box-shadow:0 10px 40px rgba(0,0,0,0.5)}
 </style>
 </head>
 <body>
@@ -74,10 +77,10 @@ html,body{margin:0;padding:0;overflow:hidden;background:#0a0a0a;font-family:'Ari
         <div id="mision" class="box">🎯 Misión: Juntá 20 monedas</div>
         <div id="racha" class="box">🔥 Racha: 1 día</div>
     </div>
-    <button id="menuBtn" class="box" onclick="abrirMenu()">⚙️ MENU</button>
-    <div id="startText">🏁 TURBO ESCAPE PRO 🏁<br>TOCÁ IZQ/DER PARA ESQUIVAR<br>NO PARA NUNCA</div>
+    <button id="menuBtn" class="box" onclick="abrirMenu()">⚙️ GARAGE</button>
+    <div id="startText">🏎️ TURBO ESCAPE PRO 🏎️<br>TOCÁ IZQ/DER PARA ESQUIVAR<br>NO PARA NUNCA</div>
     <div id="player">
-        🚗
+        🏎️
         <div id="conductor">😂</div>
     </div>
     
@@ -91,15 +94,15 @@ html,body{margin:0;padding:0;overflow:hidden;background:#0a0a0a;font-family:'Ari
 
 <div id="menu">
     <div id="menuBox">
-        <h2 style="margin:0 0 20px 0;color:#00bcd4;font-size:32px">⚙️ GARAGE</h2>
-        <p style="color:#fff;font-size:18px;margin:10px 0">Elegí tu nave:</p>
+        <h2 style="margin:0 0 20px 0;color:#00bcd4;font-size:32px">🏎️ GARAGE PRO</h2>
+        <p style="color:#fff;font-size:18px;margin:10px 0">Elegí tu deportivo:</p>
         <div id="skins">
-            <div class="skinBtn selected" onclick="elegirSkin('🚗',0)">🚗<br><span style="font-size:12px">Gratis</span></div>
-            <div class="skinBtn locked" onclick="elegirSkin('🚙',100)">🚙<br><span style="font-size:12px">100 💰</span></div>
-            <div class="skinBtn locked" onclick="elegirSkin('🏎️',500)">🏎️<br><span style="font-size:12px">500 💰</span></div>
+            <div class="skinBtn selected" onclick="elegirSkin('🏎️',0)">🏎️<br><span style="font-size:12px">F1 Gratis</span></div>
+            <div class="skinBtn locked" onclick="elegirSkin('🚗',100)">🚗<br><span style="font-size:12px">100 💰</span></div>
+            <div class="skinBtn locked" onclick="elegirSkin('🚙',500)">🚙<br><span style="font-size:12px">500 💰</span></div>
             <div class="skinBtn locked" onclick="elegirSkin('🚘',1000)">🚘<br><span style="font-size:12px">1000 💰</span></div>
-            <div class="skinBtn locked" onclick="elegirSkin('🚓',2000)">🚓<br><span style="font-size:12px">2000 💰</span></div>
-            <div class="skinBtn locked" onclick="elegirSkin('🚚',5000)">🚚<br><span style="font-size:12px">5000 💰</span></div>
+            <div class="skinBtn locked" onclick="elegirSkin('🚔',2000)">🚔<br><span style="font-size:12px">2000 💰</span></div>
+            <div class="skinBtn locked" onclick="elegirSkin('🚖',5000)">🚖<br><span style="font-size:12px">5000 💰</span></div>
         </div>
         <p style="color:#ffd700;font-size:16px;margin:20px 0">Tu mejor: <span id="mejorScore">0</span> KM</p>
         <button class="btn" onclick="cerrarMenu()">VOLVER AL JUEGO</button>
@@ -135,7 +138,7 @@ let player=document.getElementById('player');
 let conductor=document.getElementById('conductor');
 let game=document.getElementById('game');
 let ultimosSpawn=0, riendose=false, gameLoop=null;
-let skinActual='🚗', skinsDesbloqueados=[0];
+let skinActual='🏎️', skinsDesbloqueados=[0];
 let misionActual={tipo:'monedas', objetivo:20, progreso:0, recompensa:50};
 let rachaDias=1, ultimoDia=0;
 
@@ -144,14 +147,14 @@ if(localStorage.mejorScore) mejorScore=parseInt(localStorage.mejorScore);
 if(localStorage.skinsDesbloqueados) skinsDesbloqueados=JSON.parse(localStorage.skinsDesbloqueados);
 if(localStorage.skinActual) skinActual=localStorage.skinActual;
 if(localStorage.rachaDias) rachaDias=parseInt(localStorage.rachaDias);
-if(localStorage.ultimoDia) ultimoDia=parseInt(localStorage.ultimoDia);
+if(localStorage.ultimoDia) ultimoDia=localStorage.ultimoDia;
 
 document.getElementById('coins').innerHTML='💰 '+monedas;
 document.getElementById('mejorScore').innerText=mejorScore;
 player.innerHTML=skinActual+'<div id="conductor">😂</div>';
 conductor=document.getElementById('conductor');
 
-// Verificar racha diaria
+// Racha diaria
 let hoy = new Date().toDateString();
 if(ultimoDia !== hoy){
     if(ultimoDia === new Date(Date.now()-86400000).toDateString()){
@@ -165,9 +168,9 @@ if(ultimoDia !== hoy){
 }
 document.getElementById('racha').innerHTML='🔥 Racha: '+rachaDias+' día'+(rachaDias>1?'s':'');
 
-(adsbygoogle = window.adsbygoogle || []).push({});
+// Solo cargar AdMob si existe
+try{ (adsbygoogle = window.adsbygoogle || []).push({}); }catch(e){}
 
-// CONTROL TÁCTIL - JUEGO SIEMPRE CORRE
 game.addEventListener('touchstart', (e) => {
     e.preventDefault();
     if(!jugando){ empezar(); return; }
@@ -207,7 +210,7 @@ function mover(dir){
 
 function crearEnemigo(){
     if(esBoss) return;
-    const tipos = ['🚓','🚕','🚙','🚑','🚒','🏍️','🚐'];
+    const tipos = ['🏎️','🚗','🚙','🚘','🚔','🚖'];
     const enemigo = document.createElement('div');
     enemigo.className = 'car';
     enemigo.innerHTML = tipos[Math.floor(Math.random()*tipos.length)];
@@ -223,13 +226,13 @@ function crearBoss(){
     esBoss = true;
     const boss = document.createElement('div');
     boss.className = 'car boss';
-    boss.innerHTML = '🚛';
+    boss.innerHTML = '🏎️';
     boss.style.left = '50%';
     boss.style.top = '-100px';
     boss.dataset.carril = 1;
     game.appendChild(boss);
     enemigos.push({el:boss, y:-100, carril:1, vida:5, esBoss:true});
-    mostrarNotif('👑 BOSS APARECIÓ!');
+    mostrarNotif('👑 BOSS DEPORTIVO!');
 }
 
 function crearMoneda(){
@@ -433,3 +436,118 @@ function empezar(){
     powerups.forEach(p=>p.el.remove());
     enemigos=[]; monedasMapa=[]; powerups=[];
     document.getElementById('startText').style.display='none';
+    document.getElementById('gameOver').style.display='none';
+    document.getElementById('lives').innerHTML='❤️ 1';
+    player.style.left='50%';
+    player.innerHTML=skinActual+'<div id="conductor">😂</div>';
+    conductor=document.getElementById('conductor');
+    escudo=false;
+    misionActual={tipo:'monedas', objetivo:20, progreso:0, recompensa:50};
+    actualizarMision();
+    iniciarLoop();
+}
+
+function actualizarMision(){
+    document.getElementById('mision').innerHTML='🎯 '+misionActual.progreso+'/'+misionActual.objetivo+' 💰';
+    if(misionActual.progreso >= misionActual.objetivo){
+        monedas += misionActual.recompensa;
+        document.getElementById('coins').innerHTML='💰 '+monedas;
+        localStorage.monedas=monedas;
+        mostrarNotif('🎯 MISIÓN COMPLETADA! +'+misionActual.recompensa+' 💰');
+        misionActual.objetivo += 10;
+        misionActual.progreso = 0;
+        misionActual.recompensa += 25;
+    }
+}
+
+function gameOver(){
+    document.getElementById('kmFinal').innerText=Math.floor(km/10);
+    document.getElementById('monedasFinal').innerText=monedas;
+    document.getElementById('nivelFinal').innerText=nivel;
+    
+    if(Math.floor(km/10) > mejorScore){
+        mejorScore = Math.floor(km/10);
+        localStorage.mejorScore = mejorScore;
+        document.getElementById('mejorScore').innerText=mejorScore;
+        mostrarNotif('🏆 NUEVO RECORD!');
+    }
+    
+    if(misionActual.progreso < misionActual.objetivo){
+        document.getElementById('misionTexto').innerText='Misión: '+misionActual.progreso+'/'+misionActual.objetivo+' 💰';
+    } else {
+        document.getElementById('misionTexto').innerText='✅ Misión completada!';
+    }
+    
+    document.getElementById('gameOver').style.display='flex';
+    mostrarAnuncioIntersticial();
+}
+
+function verAnuncioRevive(){
+    if(typeof Android !== 'undefined' && Android.mostrarReward){
+        Android.mostrarReward();
+    } else {
+        let confirmar = confirm('Para continuar tenés que ver un anuncio de 30 segundos.\n\n¿Querés verlo?');
+        if(confirmar) pagoExitosoReward();
+    }
+}
+
+function pagoExitosoReward(){
+    vidas=1;
+    jugando=true;
+    escudo=true;
+    player.innerHTML = skinActual+'<div class="shield"></div><div id="conductor">😂</div>';
+    conductor=document.getElementById('conductor');
+    document.getElementById('gameOver').style.display='none';
+    document.getElementById('lives').innerHTML='❤️ 1';
+    setTimeout(()=>{
+        escudo=false;
+        player.innerHTML=skinActual+'<div id="conductor">😂</div>';
+        conductor=document.getElementById('conductor');
+    }, 3000);
+    iniciarLoop();
+}
+
+function mostrarAnuncioIntersticial(){
+    if(typeof Android !== 'undefined' && Android.mostrarIntersticial){
+        Android.mostrarIntersticial();
+    }
+}
+
+function abrirMenu(){
+    document.getElementById('menu').style.display='flex';
+    actualizarSkins();
+}
+
+function cerrarMenu(){
+    document.getElementById('menu').style.display='none';
+}
+
+function elegirSkin(skin, precio){
+    let index = ['🏎️','🚗','🚙','🚘','🚔','🚖'].indexOf(skin);
+    if(skinsDesbloqueados.includes(index) || monedas >= precio){
+        if(!skinsDesbloqueados.includes(index)){
+            monedas -= precio;
+            skinsDesbloqueados.push(index);
+            localStorage.skinsDesbloqueados = JSON.stringify(skinsDesbloqueados);
+            localStorage.monedas = monedas;
+            document.getElementById('coins').innerHTML='💰 '+monedas;
+            mostrarNotif('🎨 Skin desbloqueado!');
+        }
+        skinActual = skin;
+        localStorage.skinActual = skin;
+        player.innerHTML = skinActual+'<div id="conductor">😂</div>';
+        conductor=document.getElementById('conductor');
+        actualizarSkins();
+    } else {
+        mostrarNotif('❌ Te faltan monedas');
+    }
+}
+
+function actualizarSkins(){
+    let skins = document.querySelectorAll('.skinBtn');
+    skins.forEach((btn,i)=>{
+        btn.classList.remove('selected','locked');
+        if(skinsDesbloqueados.includes(i)){
+            if(['🏎️','🚗','🚙','🚘','🚔','🚖'][i] === skinActual){
+                btn.classList.add('selected');
+            }
