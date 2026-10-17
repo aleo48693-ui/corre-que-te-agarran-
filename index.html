@@ -3,49 +3,59 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Turbo Escape</title>
+<title>Turbo Escape PRO</title>
 
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-TU_ID_ADMOB"
      crossorigin="anonymous"></script>
 
 <style>
-html,body{margin:0;padding:0;overflow:hidden;background:#1a1a2e;font-family:Arial;user-select:none;-webkit-user-select:none}
-#game{width:100%;height:100vh;position:relative;background:linear-gradient(180deg,#0f3460 0%,#16213e 100%);touch-action:none}
-#road{position:absolute;width:100%;height:200%;left:0;top:-100%;background:repeating-linear-gradient(0deg,#2a2a2a 0px,#2a2a2a 60px,#333 60px,#333 120px)}
-#road.moviendo{animation:scroll 0.3s linear infinite}
+html,body{margin:0;padding:0;overflow:hidden;background:#0a0a0a;font-family:'Arial Black',Arial;user-select:none;-webkit-user-select:none}
+#game{width:100%;height:100vh;position:relative;background:linear-gradient(180deg,#0f0c29 0%,#302b63 50%,#24243e 100%);touch-action:none}
+#road{position:absolute;width:100%;height:200%;left:0;top:-100%;background:repeating-linear-gradient(0deg,#1a1a1a 0px,#1a1a1a 60px,#222 60px,#222 120px);animation:scroll 0.25s linear infinite}
 @keyframes scroll{0%{transform:translateY(0)}100%{transform:translateY(120px)}}
-.lane{position:absolute;width:6px;height:100%;background:repeating-linear-gradient(0deg,#ffeb3b 0px,#ffeb3b 30px,transparent 30px,transparent 60px);opacity:0.8}
-#player{position:absolute;bottom:120px;left:50%;transform:translateX(-50%);font-size:60px;z-index:10;transition:left 0.15s}
-#conductor{position:absolute;top:-15px;left:50%;transform:translateX(-50%);font-size:30px;display:none;animation:asomar 0.3s}
-@keyframes asomar{0%{transform:translateX(-50%) translateY(20px)}100%{transform:translateX(-50%) translateY(0)}}
-.car{position:absolute;font-size:60px;z-index:9}
-.coin{position:absolute;font-size:45px;z-index:8;animation:spin 0.8s linear infinite,glow 1s ease-in-out infinite}
-.powerup{position:absolute;font-size:45px;z-index:8;animation:float 1s ease-in-out infinite}
+.lane{position:absolute;width:8px;height:100%;background:repeating-linear-gradient(0deg,#ffeb3b 0px,#ffeb3b 40px,transparent 40px,transparent 80px);opacity:0.9;filter:drop-shadow(0 0 10px #ffeb3b)}
+#player{position:absolute;bottom:120px;left:50%;transform:translateX(-50%);font-size:65px;z-index:10;transition:left 0.12s;filter:drop-shadow(0 0 15px #00f)}
+#conductor{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:32px;display:none;animation:asomar 0.3s}
+@keyframes asomar{0%{transform:translateX(-50%) translateY(25px)}100%{transform:translateX(-50%) translateY(0)}}
+.car{position:absolute;font-size:65px;z-index:9;filter:drop-shadow(0 0 10px rgba(255,0,0,0.6))}
+.boss{position:absolute;font-size:90px;z-index:9;filter:drop-shadow(0 0 20px red);animation:bossGlow 0.5s infinite}
+@keyframes bossGlow{0%,100%{filter:drop-shadow(0 0 20px red)}50%{filter:drop-shadow(0 0 30px orange)}}
+.coin{position:absolute;font-size:48px;z-index:8;animation:spin 0.8s linear infinite,glow 1s ease-in-out infinite}
+.powerup{position:absolute;font-size:48px;z-index:8;animation:float 1s ease-in-out infinite,pulse 0.5s infinite}
+.cofre{position:absolute;font-size:55px;z-index:8;animation:bounce 0.6s infinite}
 @keyframes spin{0%{transform:rotateY(0deg)}100%{transform:rotateY(360deg)}}
-@keyframes glow{0%,100%{filter:drop-shadow(0 0 5px gold)}50%{filter:drop-shadow(0 0 15px gold)}}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes glow{0%,100%{filter:drop-shadow(0 0 8px gold)}50%{filter:drop-shadow(0 0 20px gold)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes bounce{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-15px) scale(1.1)}}
 #hud{position:absolute;top:15px;left:15px;right:15px;z-index:20}
-.box{background:linear-gradient(135deg,rgba(255,255,255,0.95),rgba(200,200,200,0.95));padding:12px 22px;border-radius:30px;font-weight:900;font-size:18px;box-shadow:0 4px 15px rgba(0,0,0,0.4);border:2px solid rgba(255,255,255,0.3)}
-#score{float:left}
-#coins{float:right;background:linear-gradient(135deg,gold,#ff9800)}
-#lives{position:absolute;top:65px;left:15px;background:linear-gradient(135deg,#f44336,#d32f2f);color:#fff}
-#combo{position:absolute;top:65px;right:15px;background:linear-gradient(135deg,#9c27b0,#7b1fa2);color:#fff;display:none}
-#level{position:absolute;top:115px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#00bcd4,#0097a7);color:#fff;font-size:16px}
-#gameOver{position:fixed;inset:0;background:rgba(0,0,0,0.97);display:none;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(5px)}
-#box{background:linear-gradient(135deg,#fff,#f5f5f5);padding:35px;border-radius:20px;text-align:center;max-width:360px;box-shadow:0 10px 40px rgba(0,0,0,0.5)}
-.btn{background:linear-gradient(135deg,#4CAF50,#45a049);color:#fff;border:0;padding:20px 35px;margin:12px 0;border-radius:12px;font-size:19px;font-weight:900;width:100%;box-shadow:0 4px 15px rgba(76,175,80,0.4)}
+.box{background:linear-gradient(135deg,rgba(20,20,20,0.95),rgba(40,40,40,0.95));padding:12px 22px;border-radius:30px;font-weight:900;font-size:17px;box-shadow:0 4px 20px rgba(0,0,0,0.6);border:2px solid rgba(255,255,255,0.2);color:#fff}
+#score{float:left;border-color:#00bcd4}
+#coins{float:right;background:linear-gradient(135deg,#ffd700,#ff9800);color:#000;border-color:gold}
+#lives{position:absolute;top:65px;left:15px;background:linear-gradient(135deg,#f44336,#d32f2f);border-color:#ff5555}
+#combo{position:absolute;top:65px;right:15px;background:linear-gradient(135deg,#9c27b0,#7b1fa2);border-color:#ff00ff;display:none}
+#level{position:absolute;top:115px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#00bcd4,#0097a7);border-color:#00ffff;font-size:16px}
+#mision{position:absolute;top:165px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#4caf50,#388e3c);border-color:#00ff00;font-size:14px;max-width:80%}
+#menuBtn{position:absolute;top:15px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#ff9800,#f57c00);border-color:orange;padding:10px 25px;font-size:16px}
+#menu{position:fixed;inset:0;background:rgba(0,0,0,0.98);display:none;align-items:center;justify-content:center;z-index:200;overflow-y:auto}
+#menuBox{background:linear-gradient(135deg,#1a1a2e,#16213e);padding:30px;border-radius:20px;text-align:center;max-width:90%;width:400px;border:3px solid #00bcd4;box-shadow:0 0 40px rgba(0,188,212,0.5);max-height:90vh;overflow-y:auto}
+.skinBtn{background:linear-gradient(135deg,#333,#555);border:2px solid #666;color:#fff;padding:15px;margin:8px;border-radius:10px;font-size:40px;cursor:pointer;display:inline-block}
+.skinBtn.selected{border-color:#00ff00;box-shadow:0 0 20px #00ff00}
+.skinBtn.locked{opacity:0.3;cursor:not-allowed}
+.btn{background:linear-gradient(135deg,#4CAF50,#45a049);color:#fff;border:0;padding:18px 35px;margin:12px 0;border-radius:12px;font-size:19px;font-weight:900;width:100%;box-shadow:0 4px 15px rgba(76,175,80,0.4);cursor:pointer}
 .btnAd{background:linear-gradient(135deg,#2196F3,#1976D2);font-size:21px;animation:pulse 1.5s infinite;box-shadow:0 4px 15px rgba(33,150,243,0.5)}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
 .btnMp{background:linear-gradient(135deg,#009EE3,#0084c7)}
-#startText{position:absolute;top:30%;left:50%;transform:translate(-50%,-50%);font-size:26px;font-weight:900;color:#fff;text-shadow:0 0 20px #00bcd4,2px 2px 4px #000;z-index:10;text-align:center;line-height:1.5}
-.explosion{position:absolute;font-size:80px;animation:boom 0.6s;z-index:15}
-@keyframes boom{0%{transform:scale(0) rotate(0deg)}50%{transform:scale(2) rotate(180deg)}100%{transform:scale(1) rotate(360deg);opacity:0}}
+#startText{position:absolute;top:28%;left:50%;transform:translate(-50%,-50%);font-size:28px;font-weight:900;color:#fff;text-shadow:0 0 25px #00bcd4,3px 3px 6px #000;z-index:10;text-align:center;line-height:1.6}
+.explosion{position:absolute;font-size:90px;animation:boom 0.6s;z-index:15}
+@keyframes boom{0%{transform:scale(0) rotate(0deg)}50%{transform:scale(2.2) rotate(180deg)}100%{transform:scale(1) rotate(360deg);opacity:0}}
 #bannerAd{position:fixed;bottom:15px;left:0;right:0;z-index:15;text-align:center}
-.shield{position:absolute;width:80px;height:80px;border:3px solid #00bcd4;border-radius:50%;animation:shield 0.5s infinite;pointer-events:none}
-@keyframes shield{0%,100%{opacity:0.3;transform:scale(1)}50%{opacity:0.8;transform:scale(1.1)}}
-.risa{position:absolute;top:-40px;left:50%;transform:translateX(-50%);font-size:25px;font-weight:900;color:#ffeb3b;text-shadow:2px 2px 4px #000;animation:subir 0.6s;pointer-events:none}
-@keyframes subir{0%{opacity:1;transform:translateX(-50%) translateY(0)}100%{opacity:0;transform:translateX(-50%) translateY(-40px)}}
-.pausado{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:32px;font-weight:900;color:#fff;text-shadow:0 0 20px #f44336,2px 2px 4px #000;z-index:30;display:none;text-align:center}
+.shield{position:absolute;width:90px;height:90px;border:4px solid #00bcd4;border-radius:50%;animation:shield 0.5s infinite;pointer-events:none;box-shadow:0 0 20px #00bcd4}
+@keyframes shield{0%,100%{opacity:0.4;transform:scale(1)}50%{opacity:0.9;transform:scale(1.15)}}
+.risa{position:absolute;top:-45px;left:50%;transform:translateX(-50%);font-size:28px;font-weight:900;color:#ffeb3b;text-shadow:0 0 10px #ff9800,2px 2px 4px #000;animation:subir 0.6s;pointer-events:none}
+@keyframes subir{0%{opacity:1;transform:translateX(-50%) translateY(0)}100%{opacity:0;transform:translateX(-50%) translateY(-50px)}}
+#racha{position:absolute;top:215px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#ff6b6b,#ee5a6f);border-color:#ff0000;font-size:14px}
+.notif{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#4caf50,#388e3c);color:#fff;padding:25px 40px;border-radius:15px;font-size:24px;font-weight:900;z-index:300;display:none;animation:popIn 0.5s;box-shadow:0 0 30px rgba(76,175,80,0.8)}
+@keyframes popIn{0%{transform:translate(-50%,-50%) scale(0)}50%{transform:translate(-50%,-50%) scale(1.2)}100%{transform:translate(-50%,-50%) scale(1)}}
 </style>
 </head>
 <body>
@@ -61,9 +71,11 @@ html,body{margin:0;padding:0;overflow:hidden;background:#1a1a2e;font-family:Aria
         <div id="lives" class="box">❤️ 1</div>
         <div id="combo" class="box">🔥 x1</div>
         <div id="level" class="box">NIVEL 1</div>
+        <div id="mision" class="box">🎯 Misión: Juntá 20 monedas</div>
+        <div id="racha" class="box">🔥 Racha: 1 día</div>
     </div>
-    <div id="startText">🏁 TURBO ESCAPE 🏁<br>TOCÁ IZQ/DER PARA ESQUIVAR<br>SOLO SE MUEVE SI TOCÁS</div>
-    <div class="pausado" id="pausaText">⏸️ PAUSADO<br>TOCÁ PARA ESQUIVAR</div>
+    <button id="menuBtn" class="box" onclick="abrirMenu()">⚙️ MENU</button>
+    <div id="startText">🏁 TURBO ESCAPE PRO 🏁<br>TOCÁ IZQ/DER PARA ESQUIVAR<br>NO PARA NUNCA</div>
     <div id="player">
         🚗
         <div id="conductor">😂</div>
@@ -77,12 +89,30 @@ html,body{margin:0;padding:0;overflow:hidden;background:#1a1a2e;font-family:Aria
     </div>
 </div>
 
+<div id="menu">
+    <div id="menuBox">
+        <h2 style="margin:0 0 20px 0;color:#00bcd4;font-size:32px">⚙️ GARAGE</h2>
+        <p style="color:#fff;font-size:18px;margin:10px 0">Elegí tu nave:</p>
+        <div id="skins">
+            <div class="skinBtn selected" onclick="elegirSkin('🚗',0)">🚗<br><span style="font-size:12px">Gratis</span></div>
+            <div class="skinBtn locked" onclick="elegirSkin('🚙',100)">🚙<br><span style="font-size:12px">100 💰</span></div>
+            <div class="skinBtn locked" onclick="elegirSkin('🏎️',500)">🏎️<br><span style="font-size:12px">500 💰</span></div>
+            <div class="skinBtn locked" onclick="elegirSkin('🚘',1000)">🚘<br><span style="font-size:12px">1000 💰</span></div>
+            <div class="skinBtn locked" onclick="elegirSkin('🚓',2000)">🚓<br><span style="font-size:12px">2000 💰</span></div>
+            <div class="skinBtn locked" onclick="elegirSkin('🚚',5000)">🚚<br><span style="font-size:12px">5000 💰</span></div>
+        </div>
+        <p style="color:#ffd700;font-size:16px;margin:20px 0">Tu mejor: <span id="mejorScore">0</span> KM</p>
+        <button class="btn" onclick="cerrarMenu()">VOLVER AL JUEGO</button>
+    </div>
+</div>
+
 <div id="gameOver">
     <div id="box">
         <h2 style="margin:0 0 15px 0;font-size:28px">💥 CHOQUE 💥</h2>
         <p style="font-size:22px;margin:12px 0">Distancia: <b id="kmFinal">0</b> KM</p>
         <p style="font-size:20px;margin:12px 0">Monedas: <b id="monedasFinal">0</b> 💰</p>
         <p style="font-size:18px;margin:12px 0;color:#9c27b0">Nivel alcanzado: <b id="nivelFinal">1</b></p>
+        <p style="font-size:16px;margin:12px 0;color:#4caf50" id="misionTexto"></p>
         <button class="btn btnAd" onclick="verAnuncioRevive()">
             📺 VER ANUNCIO PARA CONTINUAR
         </button>
@@ -92,73 +122,65 @@ html,body{margin:0;padding:0;overflow:hidden;background:#1a1a2e;font-family:Aria
     </div>
 </div>
 
+<div class="notif" id="notif"></div>
+
 <script>
 const LINK_CAFECITO = "https://mpago.la/TU_LINK_ACA";
 
-let jugando=false, tocando=false, km=0, monedas=0, vidas=1, nivel=1;
+let jugando=false, km=0, monedas=0, vidas=1, nivel=1, mejorScore=0;
 let carril=1, combo=1, comboTimer=0;
 let enemigos=[], monedasMapa=[], powerups=[];
-let velocidad=7, escudo=false;
+let velocidad=7, escudo=false, esBoss=false;
 let player=document.getElementById('player');
 let conductor=document.getElementById('conductor');
 let game=document.getElementById('game');
-let road=document.getElementById('road');
-let ultimosSpawn=0;
-let riendose=false;
-let gameLoop=null;
+let ultimosSpawn=0, riendose=false, gameLoop=null;
+let skinActual='🚗', skinsDesbloqueados=[0];
+let misionActual={tipo:'monedas', objetivo:20, progreso:0, recompensa:50};
+let rachaDias=1, ultimoDia=0;
 
 if(localStorage.monedas) monedas=parseInt(localStorage.monedas);
+if(localStorage.mejorScore) mejorScore=parseInt(localStorage.mejorScore);
+if(localStorage.skinsDesbloqueados) skinsDesbloqueados=JSON.parse(localStorage.skinsDesbloqueados);
+if(localStorage.skinActual) skinActual=localStorage.skinActual;
+if(localStorage.rachaDias) rachaDias=parseInt(localStorage.rachaDias);
+if(localStorage.ultimoDia) ultimoDia=parseInt(localStorage.ultimoDia);
+
 document.getElementById('coins').innerHTML='💰 '+monedas;
+document.getElementById('mejorScore').innerText=mejorScore;
+player.innerHTML=skinActual+'<div id="conductor">😂</div>';
+conductor=document.getElementById('conductor');
+
+// Verificar racha diaria
+let hoy = new Date().toDateString();
+if(ultimoDia !== hoy){
+    if(ultimoDia === new Date(Date.now()-86400000).toDateString()){
+        rachaDias++;
+        mostrarNotif('🔥 Racha x'+rachaDias+'! x2 monedas');
+    } else {
+        rachaDias = 1;
+    }
+    localStorage.rachaDias = rachaDias;
+    localStorage.ultimoDia = hoy;
+}
+document.getElementById('racha').innerHTML='🔥 Racha: '+rachaDias+' día'+(rachaDias>1?'s':'');
 
 (adsbygoogle = window.adsbygoogle || []).push({});
 
-// CONTROL TÁCTIL - SOLO SE MUEVE SI TOCÁS
+// CONTROL TÁCTIL - JUEGO SIEMPRE CORRE
 game.addEventListener('touchstart', (e) => {
     e.preventDefault();
-    if(!jugando){ empezar(); }
-    tocando = true;
-    road.classList.add('moviendo');
-    document.getElementById('pausaText').style.display='none';
-    
+    if(!jugando){ empezar(); return; }
     let x = e.touches[0].clientX;
     let mitad = window.innerWidth / 2;
-    if(x < mitad){
-        mover(-1); // Izquierda
-    } else {
-        mover(1); // Derecha
-    }
-    
-    if(!gameLoop) iniciarLoop();
+    if(x < mitad){ mover(-1); } else { mover(1); }
 });
 
-game.addEventListener('touchend', (e) => {
-    tocando = false;
-    road.classList.remove('moviendo');
-    document.getElementById('pausaText').style.display='block';
-});
-
-// También funciona con click en PC
-game.addEventListener('mousedown', (e) => {
-    if(!jugando){ empezar(); }
-    tocando = true;
-    road.classList.add('moviendo');
-    document.getElementById('pausaText').style.display='none';
-    
+game.addEventListener('click', (e) => {
+    if(!jugando){ empezar(); return; }
     let x = e.clientX;
     let mitad = window.innerWidth / 2;
-    if(x < mitad){
-        mover(-1);
-    } else {
-        mover(1);
-    }
-    
-    if(!gameLoop) iniciarLoop();
-});
-
-game.addEventListener('mouseup', (e) => {
-    tocando = false;
-    road.classList.remove('moviendo');
-    document.getElementById('pausaText').style.display='block';
+    if(x < mitad){ mover(-1); } else { mover(1); }
 });
 
 function mover(dir){
@@ -167,18 +189,14 @@ function mover(dir){
         carril = nuevoCarril;
         let pos = [12.5, 50, 87.5][carril];
         player.style.left = pos + '%';
-        
-        // CONDUCTOR SALE POR LA VENTANA Y SE RÍE
         if(!riendose){
             riendose = true;
             conductor.style.display = 'block';
-            
             let risa = document.createElement('div');
             risa.className = 'risa';
             risa.innerHTML = 'JA JA! 😂';
             player.appendChild(risa);
             setTimeout(()=>risa.remove(), 600);
-            
             setTimeout(()=>{
                 conductor.style.display = 'none';
                 riendose = false;
@@ -188,7 +206,8 @@ function mover(dir){
 }
 
 function crearEnemigo(){
-    const tipos = ['🚓','🚕','🚙','🚑','🚒','🏍️'];
+    if(esBoss) return;
+    const tipos = ['🚓','🚕','🚙','🚑','🚒','🏍️','🚐'];
     const enemigo = document.createElement('div');
     enemigo.className = 'car';
     enemigo.innerHTML = tipos[Math.floor(Math.random()*tipos.length)];
@@ -197,7 +216,20 @@ function crearEnemigo(){
     enemigo.style.top = '-80px';
     enemigo.dataset.carril = carrilEnemigo;
     game.appendChild(enemigo);
-    enemigos.push({el:enemigo, y:-80, carril:carrilEnemigo});
+    enemigos.push({el:enemigo, y:-80, carril:carrilEnemigo, vida:1});
+}
+
+function crearBoss(){
+    esBoss = true;
+    const boss = document.createElement('div');
+    boss.className = 'car boss';
+    boss.innerHTML = '🚛';
+    boss.style.left = '50%';
+    boss.style.top = '-100px';
+    boss.dataset.carril = 1;
+    game.appendChild(boss);
+    enemigos.push({el:boss, y:-100, carril:1, vida:5, esBoss:true});
+    mostrarNotif('👑 BOSS APARECIÓ!');
 }
 
 function crearMoneda(){
@@ -226,15 +258,33 @@ function crearPowerUp(){
     powerups.push({el:power, y:-60, carril:carrilPower, tipo:power.innerHTML});
 }
 
+function crearCofre(){
+    const cofre = document.createElement('div');
+    cofre.className = 'powerup cofre';
+    cofre.innerHTML = '🎁';
+    let carrilCofre = Math.floor(Math.random()*3);
+    cofre.style.left = [12.5, 50, 87.5][carrilCofre] + '%';
+    cofre.style.top = '-60px';
+    cofre.dataset.carril = carrilCofre;
+    cofre.dataset.tipo = 'cofre';
+    game.appendChild(cofre);
+    powerups.push({el:cofre, y:-60, carril:carrilCofre, tipo:'cofre'});
+}
+
 function iniciarLoop(){
     if(gameLoop) return;
     gameLoop = setInterval(() => {
-        if(!jugando || !tocando) return;
+        if(!jugando) return;
         
         km++;
-        nivel = Math.floor(km/500) + 1;
+        let nuevoNivel = Math.floor(km/500) + 1;
+        if(nuevoNivel > nivel){
+            nivel = nuevoNivel;
+            document.getElementById('level').innerHTML='NIVEL '+nivel;
+            if(nivel % 10 === 0 && !esBoss) crearBoss();
+            mostrarNotif('🎉 NIVEL '+nivel);
+        }
         document.getElementById('score').innerHTML='KM: '+Math.floor(km/10);
-        document.getElementById('level').innerHTML='NIVEL '+nivel;
         
         if(combo > 1){
             document.getElementById('combo').style.display='block';
@@ -249,11 +299,25 @@ function iniciarLoop(){
             e.y += velocidad + nivel*0.5;
             e.el.style.top = e.y + 'px';
             if(e.y > window.innerHeight-200 && e.y < window.innerHeight-100 && e.carril === carril && !escudo){
-                chocar(e);
+                if(e.esBoss){
+                    e.vida--;
+                    if(e.vida <= 0){
+                        monedas += 100;
+                        document.getElementById('coins').innerHTML='💰 '+monedas;
+                        localStorage.monedas=monedas;
+                        mostrarNotif('👑 BOSS DERROTADO! +100 💰');
+                        esBoss = false;
+                        e.el.remove();
+                        enemigos.splice(i,1);
+                    }
+                } else {
+                    chocar(e);
+                }
             }
             if(e.y > window.innerHeight){
                 e.el.remove();
                 enemigos.splice(i,1);
+                if(e.esBoss) esBoss = false;
             }
         });
         
@@ -261,11 +325,14 @@ function iniciarLoop(){
             m.y += velocidad + nivel*0.5;
             m.el.style.top = m.y + 'px';
             if(m.y > window.innerHeight-200 && m.y < window.innerHeight-100 && m.carril === carril){
-                monedas += combo;
+                let ganancia = combo * rachaDias;
+                monedas += ganancia;
                 combo = Math.min(combo+1, 10);
                 comboTimer = 100;
                 document.getElementById('coins').innerHTML='💰 '+monedas;
                 localStorage.monedas=monedas;
+                misionActual.progreso++;
+                actualizarMision();
                 m.el.remove();
                 monedasMapa.splice(i,1);
             }
@@ -294,6 +361,7 @@ function iniciarLoop(){
             if(Math.random() < 0.25) crearEnemigo();
             if(Math.random() < 0.6) crearMoneda();
             if(Math.random() < 0.04) crearPowerUp();
+            if(km % 1000 === 0 && km > 0) crearCofre();
             ultimosSpawn = 0;
         }
         
@@ -304,30 +372,35 @@ function iniciarLoop(){
 function activarPowerUp(tipo){
     if(tipo === '🛡️'){
         escudo = true;
-        player.innerHTML = '🚗<div class="shield"></div><div id="conductor">😂</div>';
+        player.innerHTML = skinActual+'<div class="shield"></div><div id="conductor">😂</div>';
         conductor=document.getElementById('conductor');
         setTimeout(()=>{
             escudo = false;
-            player.innerHTML = '🚗<div id="conductor">😂</div>';
+            player.innerHTML = skinActual+'<div id="conductor">😂</div>';
             conductor=document.getElementById('conductor');
         }, 3000);
     } else if(tipo === '⚡'){
         velocidad += 3;
         setTimeout(()=>velocidad -= 3, 2000);
     } else if(tipo === '💎'){
-        monedas += 10;
+        monedas += 10 * rachaDias;
         document.getElementById('coins').innerHTML='💰 '+monedas;
         localStorage.monedas=monedas;
+        mostrarNotif('+'+(10*rachaDias)+' 💰');
+    } else if(tipo === 'cofre'){
+        let premio = Math.floor(Math.random()*100)+50;
+        monedas += premio;
+        document.getElementById('coins').innerHTML='💰 '+monedas;
+        localStorage.monedas=monedas;
+        mostrarNotif('🎁 COFRE! +'+premio+' 💰');
     }
 }
 
 function chocar(enemigo){
     if(escudo) return;
     jugando=false;
-    tocando=false;
     vidas--;
     document.getElementById('lives').innerHTML='❤️ '+vidas;
-    road.classList.remove('moviendo');
     clearInterval(gameLoop);
     gameLoop=null;
     
@@ -354,73 +427,9 @@ function chocar(enemigo){
 
 function empezar(){
     jugando=true;
-    tocando=true;
     km=0; vidas=1; carril=1; velocidad=7; combo=1; nivel=1;
     enemigos.forEach(e=>e.el.remove());
     monedasMapa.forEach(m=>m.el.remove());
     powerups.forEach(p=>p.el.remove());
     enemigos=[]; monedasMapa=[]; powerups=[];
     document.getElementById('startText').style.display='none';
-    document.getElementById('gameOver').style.display='none';
-    document.getElementById('pausaText').style.display='none';
-    document.getElementById('lives').innerHTML='❤️ 1';
-    player.style.left='50%';
-    player.innerHTML='🚗<div id="conductor">😂</div>';
-    conductor=document.getElementById('conductor');
-    escudo=false;
-    road.classList.add('moviendo');
-    iniciarLoop();
-}
-
-function gameOver(){
-    document.getElementById('kmFinal').innerText=Math.floor(km/10);
-    document.getElementById('monedasFinal').innerText=monedas;
-    document.getElementById('nivelFinal').innerText=nivel;
-    document.getElementById('gameOver').style.display='flex';
-    mostrarAnuncioIntersticial();
-}
-
-function verAnuncioRevive(){
-    if(typeof Android !== 'undefined' && Android.mostrarReward){
-        Android.mostrarReward();
-    } else {
-        let confirmar = confirm('Para continuar tenés que ver un anuncio de 30 segundos.\n\n¿Querés verlo?');
-        if(confirmar) pagoExitosoReward();
-    }
-}
-
-function pagoExitosoReward(){
-    vidas=1;
-    jugando=true;
-    tocando=true;
-    escudo=true;
-    player.innerHTML = '🚗<div class="shield"></div><div id="conductor">😂</div>';
-    conductor=document.getElementById('conductor');
-    document.getElementById('gameOver').style.display='none';
-    document.getElementById('lives').innerHTML='❤️ 1';
-    document.getElementById('pausaText').style.display='none';
-    road.classList.add('moviendo');
-    setTimeout(()=>{
-        escudo=false;
-        player.innerHTML='🚗<div id="conductor">😂</div>';
-        conductor=document.getElementById('conductor');
-    }, 3000);
-    iniciarLoop();
-}
-
-function mostrarAnuncioIntersticial(){
-    if(typeof Android !== 'undefined' && Android.mostrarIntersticial){
-        Android.mostrarIntersticial();
-    }
-}
-
-function reiniciar(){
-    empezar();
-}
-
-function donar(){
-    window.open(LINK_CAFECITO,'_blank');
-}
-</script>
-</body>
-</html>
